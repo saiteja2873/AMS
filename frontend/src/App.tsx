@@ -3,6 +3,8 @@ import NavBarComponent from './navBarComponent'
 import Landing from './landing'
 import Servics from './services'
 import Login from './login'
+import SignUp from './signUp'
+import CostTracking from './costTracking'
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
       <Route path='/' element={<Landing/>}/>
       <Route path='/services' element={<Servics/>}/>
       <Route path='/login' element = {<Login/>}></Route>
+      <Route path='/signUp' element = {<SignUp/>}></Route>
+      <Route path='/costTracking' element = {<CostTracking/>}></Route>
     </Routes>
     </>
   )

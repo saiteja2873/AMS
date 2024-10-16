@@ -28,7 +28,6 @@ function Landing() {
         <div id="scrollHere" className="absolute top-[200%] left-[50%]">
                 Hello
         </div>
-
         </>
     );
 }
