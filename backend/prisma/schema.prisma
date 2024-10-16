@@ -7,6 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+type Role {
+  admin String
+  user String
+}
+
 model user {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   username String @unique
@@ -14,4 +19,12 @@ model user {
 
   createdAt DateTime @default(now())
   updatedAt DateTime
+}
+
+model costTracking {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  crop String
+  state String
+  district String
+  role Role
 }
