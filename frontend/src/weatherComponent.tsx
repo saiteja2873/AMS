@@ -25,7 +25,7 @@ const WeatherComponent: React.FC = () => {
     const [loading, setLoading] = useState(false); // Loading state
 
     const apiKey = '80d6db588f8c6440c0a0530eace9811e'; // Replace with your OpenWeatherMap API key
-
+    // what 
     const fetchWeatherData = async (city: string) => {
         setError(null); // Clear any previous error
         setWeatherData(null); // Clear previous weather data
