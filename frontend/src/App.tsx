@@ -5,6 +5,8 @@ import Servics from './services'
 import Login from './login'
 import SignUp from './signUp'
 import CostTracking from './costTracking'
+import CostCalci from './costCalci'
+import WeatherComponent from './weatherComponent'
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
       <Route path='/login' element = {<Login/>}></Route>
       <Route path='/signUp' element = {<SignUp/>}></Route>
       <Route path='/costTracking' element = {<CostTracking/>}></Route>
+      <Route path='costCalci' element = {<CostCalci/>}></Route>
+      <Route path='/weatherComponent' element = {<WeatherComponent/>}></Route>
     </Routes>
     </>
   )
