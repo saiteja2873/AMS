@@ -53,12 +53,14 @@ const CostTracking: React.FC = () => {
 
     return (
         <> 
-            <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[50%] border border-black rounded-xl shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)] bg-customLightBlue">
+        <div className='bg-customGradient h-screen w-full brightness-105'>
+        <div className='absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite'>Cost Tracking</div>
+            <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[50%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
                 <form onSubmit={handleSubmit}>
-                    <div className="absolute top-[20%] left-[20%] text-customWhite font-medium">
-                        Crop Name
+                    <div className="absolute top-[20%] left-[25%] text-customWhite font-medium">
+                        Crop Name :
                         <select 
-                            className="absolute left-32 text-black rounded-xl w-40 h-7 px-3 cursor-pointer border border-black shadow-gray-600" 
+                            className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600" 
                             value={selectedCrop} 
                             onChange={handleCropChange}
                         >
@@ -71,10 +73,10 @@ const CostTracking: React.FC = () => {
                             <option value="Barley">Barley</option>
                         </select>
                     </div>
-                    <div className="absolute top-[40%] left-[20%] text-customWhite font-medium">
-                        State
+                    <div className="absolute top-[40%] left-[25%] text-customWhite font-medium">
+                        State :
                         <select 
-                            className="absolute left-32 text-black rounded-xl w-40 h-7 px-3 cursor-pointer border border-black shadow-gray-600" 
+                            className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600" 
                             value={selectedState} 
                             onChange={handleStateChange}
                         >
@@ -86,10 +88,10 @@ const CostTracking: React.FC = () => {
                             <option value="Maharastra">Maharastra</option>
                         </select>
                     </div>
-                    <div className="absolute top-[60%] left-[20%] text-customWhite font-medium">
-                        District
+                    <div className="absolute top-[60%] left-[25%] text-customWhite font-medium">
+                        District :
                         <select 
-                            className="absolute left-32 text-black rounded-xl w-40 h-7 px-3 cursor-pointer border border-black shadow-gray-600" 
+                            className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600" 
                             value={selectedDistrict} 
                             onChange={handleDistrictChange}
                         >
@@ -101,12 +103,13 @@ const CostTracking: React.FC = () => {
                     </div>
                     <button 
                         type="submit" 
-                        className="absolute top-[80%] left-[43%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
+                        className="absolute top-[80%] left-[40%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
                     >
                         Submit
                     </button>
                 </form>
                 {/* {showCostCalci && <CostCalci />} */}
+            </div>
             </div>
         </>
     );

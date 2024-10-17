@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+    backgroundImage: {
+      // 'customGradient': 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)',
+    },
       colors: {
         customBlue: '#012E40',
         customWhite: '#F2E3D5',
@@ -13,8 +16,12 @@ export default {
         customLightLightBlue: '#026773',
         customFourBlue: '#3CA6A6',
         customExBlue: '#589A8D',
+        customBgColor: '',
         primary: {"50":"#eff6ff","100":"#dbeafe","200":"#bfdbfe","300":"#93c5fd","400":"#60a5fa","500":"#3b82f6","600":"#2563eb","700":"#1d4ed8","800":"#1e40af","900":"#1e3a8a","950":"#172554"}
       
+      },
+      fontFamily: {
+        'mona-sans': ['"Mona Sans"', 'sans-serif'],           // Sans-serif font
       },
     //   fontFamily: {
     //     'body': [

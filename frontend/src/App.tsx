@@ -12,7 +12,7 @@ function App() {
   return (
     <>
     <NavBarComponent/>
-    <Routes>
+    <Routes >
       <Route path='/' element={<Landing/>}/>
       <Route path='/services' element={<Servics/>}/>
       <Route path='/login' element = {<Login/>}></Route>
