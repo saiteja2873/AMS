@@ -11,7 +11,6 @@ interface WeatherData {
         main: {
             temp: number;
         };
-        // hello
         weather: Array<{
             description: string;
         }>;
@@ -25,7 +24,7 @@ const WeatherComponent: React.FC = () => {
     const [loading, setLoading] = useState(false); // Loading state
 
     const apiKey = '80d6db588f8c6440c0a0530eace9811e'; // Replace with your OpenWeatherMap API key
-    // what 
+
     const fetchWeatherData = async (city: string) => {
         setError(null); // Clear any previous error
         setWeatherData(null); // Clear previous weather data
@@ -51,9 +50,17 @@ const WeatherComponent: React.FC = () => {
         fetchWeatherData(city); // Fetch weather data on button click
     };
 
+    const formatDate = (timestamp: number) => {
+        const date = new Date(timestamp * 1000);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+    };
+
     const groupByDate = (data: WeatherData['list']) => {
         return data.reduce((acc, day) => {
-            const date = new Date(day.dt * 1000).toLocaleDateString();
+            const date = formatDate(day.dt);
             if (!acc[date]) {
                 acc[date] = [];
             }
@@ -69,11 +76,11 @@ const WeatherComponent: React.FC = () => {
                 <div>
                     <div className='absolute left-[11%] top-[-1%] box-border w-[78%] h-[6%] border-2 border-black bg-gray-400 rounded-xl'></div>
                     <input
-                        className='absolute left-[19%] top-4 block p-2.5 w-[30%] text-sm font-medium text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                        className='absolute left-[19%] top-4 block p-2.5 w-[31%] text-sm font-medium text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                         type="text"
                         value={city}
                         onChange={handleCityChange}
-                        placeholder="Enter city (e.g., Delhi)"
+                        placeholder="Enter Place Name or pincode (e.g., Delhi)"
                     />
                     <button onClick={handleSubmit} className='absolute left-[57%] top-5 border-2 border-customBlue rounded-2xl px-3 py-1 hover:bg-customBlue hover:text-customWhite transition duration-500'>Get Forecast</button>
 
