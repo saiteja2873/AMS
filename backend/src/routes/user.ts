@@ -18,3 +18,5 @@ app.post("/costTracking", async (c) =>{
         message : "Details received from Frontend"
     })
 })
+
+export default app;

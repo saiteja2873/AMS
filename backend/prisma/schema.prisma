@@ -9,22 +9,37 @@ datasource db {
 
 type Role {
   admin String
-  user String
+  user  String
 }
 
-model user {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
   username String @unique
   password String
+  role     Role
 
   createdAt DateTime @default(now())
   updatedAt DateTime
 }
 
-model costTracking {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  crop String
-  state String
-  district String
-  role Role
+model Crop {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  crop        String
+  state       String
+  district    String
+  msp         Float
+  marketPrice Float
+
+  CostTracking CostTracking?
+}
+
+model CostTracking {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  cropId         String @unique @db.ObjectId
+  seedsCost      Float
+  irrigationCost Float
+  fertilizerCost Float
+  labourCost     Float
+
+  crop Crop @relation(fields: [cropId], references: [id])
 }
