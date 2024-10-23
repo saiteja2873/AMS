@@ -36,11 +36,8 @@ const CostTracking: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const localAxios = axios.create({
-            baseURL: 'http://localhost:5173',
-        })
         try {
-            const response = await localAxios.post('/costTracking', {
+            const response = await axios.post('http://localhost:5173/costTracking', {
                 crop: selectedCrop,
                 state: selectedState,
                 district: selectedDistrict,
@@ -61,7 +58,7 @@ const CostTracking: React.FC = () => {
         <div 
         style={{ 
                 background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)', 
-                height: '205vh',
+                height: '100h',
                 margin: 0 
             }}>
         <div className='bg-customGradient h-screen w-full brightness-105'>

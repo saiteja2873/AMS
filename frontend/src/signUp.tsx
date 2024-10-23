@@ -29,25 +29,31 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
   
 
   return (
-    <section className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
+    <>
+    <div style={{ 
+                background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)', 
+                height: '100vh',
+                margin: 0 
+            }}>
+    <section className="min-h-screen flex items-center justify-center">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto lg:py-0 w-full max-w-md">
-        <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-          <img className="w-8 h-8 mr-2" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg" alt="Flowbite Logo" />
+        <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white dark:text-white">
+          <img className="w-14 h-10 mr-2" src="./Logo.png" alt="AMS Logo" />
           AMS
         </a>
-        <div className="w-full bg-white rounded-lg shadow-lg dark:border dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full rounded-lg shadow-lg dark:border dark:bg-gray-800 dark:border-gray-700 backdrop-blur-xl backdrop-brightness-125">
           <div className="p-6 space-y-6">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-100 md:text-2xl dark:text-white">
               Create an account
             </h1>
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-200 dark:text-white">Your email</label>
                 <input
                   type="email"
                   name="email"
                   id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg
+                  className="bg-gray-50 border border-gray-300 font-medium text-gray-900 text-sm rounded-lg
                    focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="name@company.com"
                   value={formData.email}
@@ -56,12 +62,12 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
                 />
               </div>
               <div>
-                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-200 dark:text-white">Password</label>
                 <input
                   type="password"
                   name="password"
                   id="password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg font-medium focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="••••••••"
                   value={formData.password}
                   onChange={handleInputChange}
@@ -69,12 +75,12 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
                 />
               </div>
               <div>
-                <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm password</label>
+                <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-200 dark:text-white">Confirm password</label>
                 <input
                   type="password"
                   name="confirmPassword"
                   id="confirm-password"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  className="bg-gray-50 border border-gray-300 text-gray-900  font-medium text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   placeholder="••••••••"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
@@ -94,8 +100,8 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
                   />
                 </div>
                 <div className="ml-3 text-sm">
-                  <label htmlFor="terms" className="font-light text-gray-500 dark:text-gray-300">
-                    I accept the <a href="#" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Terms and Conditions</a>
+                  <label htmlFor="terms" className="font-light text-gray-300 dark:text-gray-300">
+                    I accept the <a href="#" className="font-medium text-primary-200 hover:underline dark:text-primary-500">Terms and Conditions</a>
                   </label>
                 </div>
               </div>
@@ -105,14 +111,16 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
               >
                 Create an account
               </button>
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                Already have an account? <Link to={'../login'} className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</Link>
+              <p className="text-sm font-light text-gray-300 dark:text-gray-400">
+                Already have an account? <Link to={'../login'} className="font-medium text-primary-200 hover:underline dark:text-primary-500">Login here</Link>
               </p>
             </form>
           </div>
         </div>
       </div>
     </section>
+    </div>
+    </>
   );
 };
 
