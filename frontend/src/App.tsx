@@ -21,7 +21,8 @@ function App() {
         <Route path="/login" element={<Login />}></Route>
         <Route path="/signUp" element={<SignUp />}></Route>
         <Route path="/services/costTracking" element={<CostTracking />}></Route>
-        <Route path="/costTrackingAdm" element={<CostTrackingAdm />}></Route>
+        <Route path="/services/costTracking" element={<CostTrackingAdm />}></Route>
+        <Route path="/services/costTrackingAdm" element={<CostTrackingAdm />}></Route>
         <Route path="costCalci" element={<CostCalci />}></Route>
         <Route path="/services/weatherComponent" element={<WeatherComponent />}></Route>
       </Routes>

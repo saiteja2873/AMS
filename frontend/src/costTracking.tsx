@@ -1,18 +1,15 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import {type Crop} from '../components/types'
-// import CostCalci from './costCalci'
+import {type Crop} from '../components/types';
 
-
-
-// let showCostCalci = false
 const CostTracking: React.FC = () => {
     const [selectedState, setSelectedState] = useState<string>('');
     const [selectedDistrict, setSelectedDistrict] = useState<string>('');
-    const [selectedCrop, setSelectedCrop] = useState<string>(''); // State for the selected crop
+    const [selectedCrop, setSelectedCrop] = useState<string>('');
     const [districts, setDistricts] = useState<string[]>([]);
     const [data, setData] = useState<Crop>();
+    const tableRef = useRef<HTMLDivElement>(null); // Create a ref for the table
 
     const districtsByState: Record<string, string[]> = {
         Tamilnadu: ['Chennai', 'Coimbatore', 'Madurai'],
@@ -45,38 +42,35 @@ const CostTracking: React.FC = () => {
             if (response.status == 200) {
                 toast.success('Data fetched successfully');
                 setData({...response.data.cost, ...response.data.crop});
-                console.log(data)
+                // Scroll to the table area after data is set
+                tableRef.current?.scrollIntoView({ behavior: 'smooth' });
             }
             else {
                 toast.error('Failed to fetch crop details');
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {
-                // If the error is from Axios
                 console.error('Axios error:', error.message);
                 if (error.response) {
-                    // The request was made and the server responded with a status code
                     console.error('Response data:', error.response.data);
                     console.error('Response status:', error.response.status);
                 }
             } else {
-                // Something else caused the error
                 console.error('Unexpected error:', error);
             }
         } 
     };
-    
 
     return (
         <> 
         <div 
-        style={{ 
+            style={{ 
                 background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)', 
-                height: '100h',
+                height: '125vh',
                 margin: 0 
             }}>
-        <div className='bg-customGradient h-screen w-full brightness-105'>
-        <div className='absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite'>Cost Tracking</div>
+            <div className='bg-customGradient h-screen w-full brightness-105'>
+            <div className='absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite'>Cost Tracking</div>
             <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[50%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
                 <form onSubmit={handleSubmit}>
                     <div className="absolute top-[20%] left-[25%] text-customWhite font-medium">
@@ -130,50 +124,52 @@ const CostTracking: React.FC = () => {
                         Submit
                     </button>
                 </form>
-                {/* {showCostCalci && <CostCalci />} */}
             </div>
             </div>
-            </div>
-            {data && <ShowResults data={data}/>}
+            {/* Table with Ref */}
+            {data && (
+                <div ref={tableRef}> {/* Reference to scroll to */}
+                    <ShowResults data={data}/>
+                </div>
+            )}
+           </div>
+
         </>
     );
 };
 
-
-function ShowResults(props: any) {
-    const { data } = props;
+function ShowResults({ data }: any) {
     return (
-        <div>
-            <table className="min-w-full bg-white border border-gray-300">
-                <thead className="bg-gray-100 border-b">
-                    <tr>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crop</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">District</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MSP</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Market Price</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seeds Cost</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Irrigation Cost</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fertilizer Cost</th>
-                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Labour Cost</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr className="bg-white border-b">
-                        <td className="px-6 py-4 whitespace-nowrap">{data.crop}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{data.state}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{data.district}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{data.msp}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{data.marketPrice}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{data.seedsCost}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{data.irrigationCost}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{data.fertilizerCost}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">{data.labourCost}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div className="p-8">
+            <div className='absolute top-[100%] left-[15%]'>
+                <table className='relative left-[-2%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium'>
+                    <thead>
+                        <tr>
+                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Crop</th>
+                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>State</th>
+                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>District</th>
+                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Seeds Cost</th>
+                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Irrigation Cost</th>
+                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Fertilizer Cost</th>
+                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Labour Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr className="bg-white text-black">
+                            <td className='border border-customWhite px-10 py-4 text-center'>{data.crop}</td>
+                            <td className='border border-customWhite px-10 py-2 text-center'>{data.state}</td>
+                            <td className='border border-customWhite px-10 py-2 text-center'>{data.district}</td>
+                            <td className='border border-customWhite px-10 py-2 text-center'>{data.seedsCost}</td>
+                            <td className='border border-customWhite px-10 py-2 text-center'>{data.irrigationCost}</td>
+                            <td className='border border-customWhite px-10 py-2 text-center'>{data.fertilizerCost}</td>
+                            <td className='border border-customWhite px-10 py-2 text-center'>{data.labourCost}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    )
+    );
 }
+
 
 export default CostTracking;
