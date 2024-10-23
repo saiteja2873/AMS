@@ -19,9 +19,14 @@ app.get('/', async (c) => {
                 state,
                 district
             }
-        })
+        });
         if(!targetCrop) return c.json({error: "Crop not found"}, 202)
-        return c.json({crop: targetCrop}, 200)
+        const targetCost = await prisma.costTracking.findFirst({
+            where: {
+                cropId: targetCrop.id
+            }
+        })
+        return c.json({crop: targetCrop, cost: targetCost}, 200)
     } catch (err) {
         return c.json({error: "Something went wrong"}, 401);
     }
@@ -31,7 +36,7 @@ app.get('/', async (c) => {
 app.post('/', async(c) => {
     const {crop, state, district, msp, marketPrice, seedsCost, irrigationCost, fertilizerCost, labourCost } =  await c.req.json();
     try {
-        console.log(crop, state, district, msp, marketPrice, seedsCost, irrigationCost, fertilizerCost, labourCost)
+        console.log(crop, state, district, msp,typeof msp, marketPrice, seedsCost, irrigationCost, fertilizerCost, labourCost)
         const newCrop =await prisma.crop.create({
             data: {
                 crop,
@@ -50,7 +55,10 @@ app.post('/', async(c) => {
                 fertilizerCost,
                 labourCost
             }
-        }) 
+        
+        }
+    ) 
+    console.log("in ");
         return c.json({crop: newCrop, cost: newCropCost}, 200);
     } catch (err) {
         return c.json({error: "Something went wrong"}, 401);

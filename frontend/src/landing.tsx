@@ -28,7 +28,7 @@ function Landing() {
                     Know More
                 </button>
                 <button className="absolute top-[60%] font-medium left-[50%] border w-[11%] px-6 py-2.5 border-customWhite rounded-3xl hover:bg-black text-customWhite transition duration-700 ease-in-out">
-                    <Link to={'./Services'}>
+                    <Link to={'./services'}>
                         Services
                     </Link>
                 </button>

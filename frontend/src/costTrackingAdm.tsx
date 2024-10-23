@@ -5,28 +5,31 @@ const CostTrackingAdm: React.FC = () => {
     const [selectedState, setSelectedState] = useState<string>('');
     const [selectedDistrict, setSelectedDistrict] = useState<string>('');
     const [selectedCrop, setSelectedCrop] = useState<string>(''); 
-    const [seedsCost, setSeedsCost] = useState<string>('');
-    const [irrigationCost, setIrrigationCost] = useState<string>('');
-    const [fertilizerCost, setFertilizerCost] = useState<string>('');
-    const [labourCost, setLabourCost] = useState<string>('');
+    const [seedsCost, setSeedsCost] = useState<number>();
+    const [irrigationCost, setIrrigationCost] = useState<number>();
+    const [fertilizerCost, setFertilizerCost] = useState<number>();
+    const [labourCost, setLabourCost] = useState<number>();
+    const [msp, setMsp] = useState<number>();
+    const [marketPrice, setMarketPrice] = useState<number>();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5173/costTrackingAdm', {
+            const response = await axios.post('http://localhost:4000/crop', {
                 crop: selectedCrop,
                 state: selectedState,
                 district: selectedDistrict,
+                msp,
+                marketPrice,
                 seedsCost,
                 irrigationCost,
                 fertilizerCost,
                 labourCost,
             });
 
-            console.log(response.data); // Handle the response as needed
+            console.log(response.data); 
         } catch (error) {
             console.error("Error submitting the form", error);
-            // Handle error as needed, e.g. show error message to the user
         }
     };
 
@@ -75,7 +78,7 @@ const CostTrackingAdm: React.FC = () => {
                         <input 
                             type='text' 
                             value={seedsCost} 
-                            onChange={(e) => setSeedsCost(e.target.value)}
+                            onChange={(e) => setSeedsCost(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
                     </div>
@@ -84,7 +87,7 @@ const CostTrackingAdm: React.FC = () => {
                         <input 
                             type='text' 
                             value={irrigationCost} 
-                            onChange={(e) => setIrrigationCost(e.target.value)}
+                            onChange={(e) => setIrrigationCost(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
                     </div>
@@ -93,7 +96,7 @@ const CostTrackingAdm: React.FC = () => {
                         <input 
                             type='text' 
                             value={fertilizerCost} 
-                            onChange={(e) => setFertilizerCost(e.target.value)}
+                            onChange={(e) => setFertilizerCost(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
                     </div>
@@ -102,13 +105,31 @@ const CostTrackingAdm: React.FC = () => {
                         <input 
                             type='text' 
                             value={labourCost} 
-                            onChange={(e) => setLabourCost(e.target.value)}
+                            onChange={(e) => setLabourCost(parseFloat(e.target.value))}
+                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
+                        />
+                    </div>
+                    <div className="absolute top-[74%] left-[25%] text-customWhite font-medium">
+                        Msp :
+                        <input 
+                            type='text' 
+                            value={msp} 
+                            onChange={(e) => setMsp(parseFloat(e.target.value))}
+                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
+                        />
+                    </div>
+                    <div className="absolute top-[82%] left-[25%] text-customWhite font-medium">
+                        Market Price :
+                        <input 
+                            type='text' 
+                            value={marketPrice} 
+                            onChange={(e) => setMarketPrice(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
                     </div>
                     <button 
                         type="submit" 
-                        className="absolute top-[78%] left-[40%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
+                        className="absolute top-[92%] left-[40%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
                     >
                         Submit
                     </button>

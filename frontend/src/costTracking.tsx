@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
+import {type Crop} from '../components/types'
 // import CostCalci from './costCalci'
 
 
@@ -11,6 +12,7 @@ const CostTracking: React.FC = () => {
     const [selectedDistrict, setSelectedDistrict] = useState<string>('');
     const [selectedCrop, setSelectedCrop] = useState<string>(''); // State for the selected crop
     const [districts, setDistricts] = useState<string[]>([]);
+    const [data, setData] = useState<Crop>();
 
     const districtsByState: Record<string, string[]> = {
         Tamilnadu: ['Chennai', 'Coimbatore', 'Madurai'],
@@ -42,7 +44,8 @@ const CostTracking: React.FC = () => {
             console.log('Response:', response.data);
             if (response.status == 200) {
                 toast.success('Data fetched successfully');
-                console.log(response.data)
+                setData({...response.data.cost, ...response.data.crop});
+                console.log(data)
             }
             else {
                 toast.error('Failed to fetch crop details');
@@ -131,8 +134,46 @@ const CostTracking: React.FC = () => {
             </div>
             </div>
             </div>
+            {data && <ShowResults data={data}/>}
         </>
     );
 };
+
+
+function ShowResults(props: any) {
+    const { data } = props;
+    return (
+        <div>
+            <table className="min-w-full bg-white border border-gray-300">
+                <thead className="bg-gray-100 border-b">
+                    <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Crop</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">District</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">MSP</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Market Price</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seeds Cost</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Irrigation Cost</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fertilizer Cost</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Labour Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr className="bg-white border-b">
+                        <td className="px-6 py-4 whitespace-nowrap">{data.crop}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{data.state}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{data.district}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{data.msp}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{data.marketPrice}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{data.seedsCost}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{data.irrigationCost}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{data.fertilizerCost}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{data.labourCost}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    )
+}
 
 export default CostTracking;
