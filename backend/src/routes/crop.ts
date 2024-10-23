@@ -4,7 +4,11 @@ import prisma from "../dbSeed";
 const app = new Hono();
 
 app.get('/', async (c) => {
-    const { crop, state, district} = await c.req.json();
+    const crop = c.req.query("crop");
+    const state = c.req.query("state");
+    const district = c.req.query("district");
+    console.log(crop, state, district)
+    if (!crop || !state || !district) return c.json({error: "Please provide crop, state and district"}, 401)
     try {
         const targetCrop = await prisma.crop.findFirst({
             where: {
@@ -13,6 +17,7 @@ app.get('/', async (c) => {
                 district
             }
         })
+        if(!targetCrop) return c.json({error: "Crop not found"}, 401)
         return c.json({crop: targetCrop}, 200)
     } catch (err) {
         return c.json({error: "Something went wrong"}, 401);

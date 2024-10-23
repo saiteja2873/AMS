@@ -1,5 +1,8 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
+import axios from 'axios';
 // import CostCalci from './costCalci'
+
+
 
 // let showCostCalci = false
 const CostTracking: React.FC = () => {
@@ -33,26 +36,34 @@ const CostTracking: React.FC = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const response = await fetch('/costTracking', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+        const localAxios = axios.create({
+            baseURL: 'http://localhost:5173',
+        })
+        try {
+            const response = await localAxios.post('/costTracking', {
                 crop: selectedCrop,
                 state: selectedState,
                 district: selectedDistrict,
-            }),
+            });
+            
+            // showCostCalci = true
+    
+            const result = response.data; // axios automatically parses JSON
+            console.log(result); // Handle the response as needed
+        } catch (error) {
+            console.error('Error:', error); // Handle error
         }
-    );
-    // showCostCalci = true
-
-        const data = await response.json();
-        console.log(data); // Handle the response as needed
     };
+    
 
     return (
         <> 
+        <div 
+        style={{ 
+                background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)', 
+                height: '205vh',
+                margin: 0 
+            }}>
         <div className='bg-customGradient h-screen w-full brightness-105'>
         <div className='absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite'>Cost Tracking</div>
             <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[50%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
@@ -109,6 +120,7 @@ const CostTracking: React.FC = () => {
                     </button>
                 </form>
                 {/* {showCostCalci && <CostCalci />} */}
+            </div>
             </div>
             </div>
         </>

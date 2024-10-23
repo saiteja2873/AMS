@@ -71,7 +71,12 @@ const WeatherComponent: React.FC = () => {
 
     return (
         <>
-            <h1 className='absolute left-[45%] top-[15%] font-bold text-2xl'>Weather Forecast</h1>
+        <div style={{ 
+                background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)', 
+                height: '330vh',
+                margin: 0 
+            }}>
+            <h1 className='absolute left-[45%] top-[15%] font-bold text-2xl text-customWhite'>Weather Forecast</h1>
             <div className='absolute top-[27%] left-[21%] box-border w-[60%] h-[300%]'>
                 <div>
                     <div className='absolute left-[11%] top-[-1%] box-border w-[78%] h-[6%] border-2 border-black bg-gray-400 rounded-xl'></div>
@@ -91,13 +96,13 @@ const WeatherComponent: React.FC = () => {
                     {weatherData && !loading && (
                         <div className='absolute top-28 left-[2%]'>
                             <h2 className='absolute top-[-2%] left-[16%] font-medium'>City: {weatherData.city.name}, {weatherData.city.country}</h2>
-                            <table className='relative left-20 top-8 min-w-full border-collapse border-2 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customBlue rounded-xl'>
+                            <table className='relative left-20 top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium'>
                                 <thead>
                                     <tr>
-                                        <th className='border border-black px-10 py-2 text-center bg-gray-400'>Date</th>
-                                        <th className='border border-black px-10 py-2 text-center bg-gray-400'>Time</th>
-                                        <th className='border border-black px-10 py-2 text-center bg-gray-400'>Temperature (°C)</th>
-                                        <th className='border border-black px-10 py-2 text-center bg-gray-400'>Weather</th>
+                                        <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Date</th>
+                                        <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Time</th>
+                                        <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Temperature (°C)</th>
+                                        <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Weather</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -108,11 +113,11 @@ const WeatherComponent: React.FC = () => {
                                             return (
                                                 <tr key={day.dt}>
                                                     {index === 0 && (
-                                                        <td rowSpan={dayData.length} className='border border-black px-10 py-2 text-center'>{date}</td>
+                                                        <td rowSpan={dayData.length} className='border border-customWhite px-10 py-2 text-center'>{date}</td>
                                                     )}
-                                                    <td className='border border-black px-10 py-2 text-center'>{formattedTime}</td>
-                                                    <td className='border border-black px-10 py-2 text-center'>{day.main.temp} °C</td>
-                                                    <td className='border border-black px-10 py-2 text-center'>{day.weather[0].description}</td>
+                                                    <td className='border border-customWhite px-10 py-2 text-center'>{formattedTime}</td>
+                                                    <td className='border border-customWhite px-10 py-2 text-center'>{day.main.temp} °C</td>
+                                                    <td className='border border-customWhite px-10 py-2 text-center'>{day.weather[0].description}</td>
                                                 </tr>
                                             );
                                         })
@@ -123,6 +128,7 @@ const WeatherComponent: React.FC = () => {
                         </div>
                     )}
                 </div>
+            </div>
             </div>
         </>
     );
