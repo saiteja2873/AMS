@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
+import { toast } from 'sonner';
 // import CostCalci from './costCalci'
 
 
@@ -37,19 +38,29 @@ const CostTracking: React.FC = () => {
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5173/costTracking', {
-                crop: selectedCrop,
-                state: selectedState,
-                district: selectedDistrict,
-            });
-            
-            // showCostCalci = true
-    
-            const result = response.data; // axios automatically parses JSON
-            console.log(result); // Handle the response as needed
+            const response = await axios.get(`http://localhost:4000/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`);
+            console.log('Response:', response.data);
+            if (response.status == 200) {
+                toast.success('Data fetched successfully');
+                console.log(response.data)
+            }
+            else {
+                toast.error('Failed to fetch crop details');
+            }
         } catch (error) {
-            console.error('Error:', error); // Handle error
-        }
+            if (axios.isAxiosError(error)) {
+                // If the error is from Axios
+                console.error('Axios error:', error.message);
+                if (error.response) {
+                    // The request was made and the server responded with a status code
+                    console.error('Response data:', error.response.data);
+                    console.error('Response status:', error.response.status);
+                }
+            } else {
+                // Something else caused the error
+                console.error('Unexpected error:', error);
+            }
+        } 
     };
     
 

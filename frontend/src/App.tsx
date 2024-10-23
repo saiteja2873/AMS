@@ -8,11 +8,13 @@ import CostTracking from "./costTracking";
 import CostCalci from "./costCalci";
 import WeatherComponent from "./weatherComponent";
 import CostTrackingAdm from "./costTrackingAdm";
+import { Toaster } from "sonner";
 
 function App() {
   return (
     <>
       <NavBarComponent />
+      <Toaster position="top-right" richColors closeButton />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/services" element={<Servics />} />

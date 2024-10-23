@@ -1,7 +1,10 @@
 import { Hono } from "hono";
 import prisma from "../dbSeed";
+import { cors } from "hono/cors";
 
 const app = new Hono();
+app.use('/*', cors());
+
 
 app.get('/', async (c) => {
     const crop = c.req.query("crop");
@@ -17,7 +20,7 @@ app.get('/', async (c) => {
                 district
             }
         })
-        if(!targetCrop) return c.json({error: "Crop not found"}, 401)
+        if(!targetCrop) return c.json({error: "Crop not found"}, 202)
         return c.json({crop: targetCrop}, 200)
     } catch (err) {
         return c.json({error: "Something went wrong"}, 401);
@@ -28,6 +31,7 @@ app.get('/', async (c) => {
 app.post('/', async(c) => {
     const {crop, state, district, msp, marketPrice, seedsCost, irrigationCost, fertilizerCost, labourCost } =  await c.req.json();
     try {
+        console.log(crop, state, district, msp, marketPrice, seedsCost, irrigationCost, fertilizerCost, labourCost)
         const newCrop =await prisma.crop.create({
             data: {
                 crop,
