@@ -29,7 +29,10 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
       toast.error('Passwords do not match');
       return;
     }
-    const response = await axios.post('http://localhost:4000/user/signUp', formData);
+    const response = await axios.post('http://localhost:4000/user/signUp', {
+      email : formData.email,
+      password : formData.password
+    });
     console.log(response.data);
   };
   

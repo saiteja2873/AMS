@@ -16,21 +16,30 @@ function NavBarComponent() {
                         </button>
                     </div>
                     <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-                        <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 bg-transparent">
-                            <li>
-                                <a href="#" className="block py-2 px-3 text-customWhite  md:bg-transparent md:hover:text-customFourBlue  md:p-0 " >Home</a>
-                            </li>
-                            <li>
-                                <a href="#" className="block py-2 px-3 text-customWhite md:hover:bg-transparent md:hover:text-customFourBlue md:p-0 ">About</a>
-                            </li>
-                            <li>
-                                <a href="#" className="block py-2 px-3 text-customWhite  md:bg-transparent md:hover:text-customFourBlue  md:p-0">Services</a>
-                            </li>
-                            <li>
-                                <a href="#" className="block py-2 px-3 text-customWhite  md:bg-transparent md:hover:text-customFourBlue  md:p-0">Contact</a>
-                            </li>
-                        </ul>
-                    </div>
+  <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 bg-transparent">
+    <li>
+      <Link to={'./'} className="block py-2 px-3 text-customWhite md:bg-transparent md:hover:text-customFourBlue md:p-0">
+        Home
+      </Link>
+    </li>
+    <li>
+      <Link to={'./about'} className="block py-2 px-3 text-customWhite md:bg-transparent md:hover:text-customFourBlue md:p-0">
+        About
+      </Link>
+    </li>
+    <li>
+      <Link to={'./services'} className="block py-2 px-3 text-customWhite md:bg-transparent md:hover:text-customFourBlue md:p-0">
+        Services
+      </Link>
+    </li>
+    <li>
+      <a href="#" className="block py-2 px-3 text-customWhite md:bg-transparent md:hover:text-customFourBlue md:p-0">
+        Contact
+      </a>
+    </li>
+  </ul>
+</div>
+
                 </div>
             </nav>
         </div>

@@ -14,7 +14,7 @@ function Landing() {
             style={{ 
                 background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)', 
                 height: '205vh',
-                margin: 0 
+                margin: 0
             }}>
             <div className="absolute top-[30%] left-[12%] box-border h-[50%] w-[80%] p-3 ">
                 <div className="absolute top-[6%] left-[10%] text-customWhite text-6xl font-mono-sans font-medium subpixel-antialiased text-center">
