@@ -5,10 +5,12 @@ import Servics from "./services";
 import Login from "./login";
 import SignUp from "./signUp";
 import CostTracking from "./costTracking";
+import PriceTracking from "./priceTracking";
 import CostCalci from "./costCalci";
 import WeatherComponent from "./weatherComponent";
 import CostTrackingAdm from "./costTrackingAdm";
 import { Toaster } from "sonner";
+
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
         <Route path="/services/costTrackingAdm" element={<CostTrackingAdm />}></Route>
         <Route path="costCalci" element={<CostCalci />}></Route>
         <Route path="/services/weatherComponent" element={<WeatherComponent />}></Route>
+        <Route path="/services/priceTracking" element={<PriceTracking />}></Route>
       </Routes>
     </>
   );

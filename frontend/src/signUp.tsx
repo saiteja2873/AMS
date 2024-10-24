@@ -2,6 +2,8 @@
 import { useState } from "react";
 import React, { ChangeEvent } from 'react';
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { toast } from "sonner";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -21,10 +23,14 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
   }));
 };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log(formData);
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    const response = await axios.post('http://localhost:4000/user/signUp', formData);
+    console.log(response.data);
   };
   
 

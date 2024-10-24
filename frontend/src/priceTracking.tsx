@@ -70,7 +70,7 @@ const PriceTracking: React.FC = () => {
                 margin: 0 
             }}>
             <div className='bg-customGradient h-screen w-full brightness-105'>
-            <div className='absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite'>Cost Tracking</div>
+            <div className='absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite'>Price Tracking</div>
             <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[50%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
                 <form onSubmit={handleSubmit}>
                     <div className="absolute top-[20%] left-[25%] text-customWhite font-medium">
@@ -141,8 +141,9 @@ const PriceTracking: React.FC = () => {
 function ShowResults({ data }: any) {
     return (
         <div className="p-8">
-            <div className='absolute top-[100%] left-[15%]'>
-                <table className='relative left-[-8%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium'>
+            <div className='absolute top-[100%] left-[32%]'>
+                <div className='absolute text-white left-[-7%] font-medium text-2xl'>Crop Details</div>
+                <table className='relative left-[-8%] top-12 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium'>
                     <thead>
                         <tr>
                             <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Crop</th>
@@ -150,10 +151,6 @@ function ShowResults({ data }: any) {
                             <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>District</th>
                             <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>MSP</th>
                             <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Market Price</th>
-                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Seeds Cost</th>
-                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Irrigation Cost</th>
-                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Fertilizer Cost</th>
-                            <th className='border border-customWhite px-10 py-2 text-center bg-gray-400'>Labour Cost</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -163,10 +160,6 @@ function ShowResults({ data }: any) {
                             <td className='border border-customWhite px-10 py-2 text-center'>{data.district}</td>
                             <td className='border border-customWhite px-10 py-2 text-center'>{data.msp}</td>
                             <td className='border border-customWhite px-10 py-2 text-center'>{data.marketPrice}</td>
-                            <td className='border border-customWhite px-10 py-2 text-center'>{data.seedsCost}</td>
-                            <td className='border border-customWhite px-10 py-2 text-center'>{data.irrigationCost}</td>
-                            <td className='border border-customWhite px-10 py-2 text-center'>{data.fertilizerCost}</td>
-                            <td className='border border-customWhite px-10 py-2 text-center'>{data.labourCost}</td>
                         </tr>
                     </tbody>
                 </table>
