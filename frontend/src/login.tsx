@@ -11,7 +11,7 @@ const Login = () => {
     });
 
     // Access Zustand store actions
-    const { toggleAuth, toggleEmail } = useUser();
+    const { toggleAuth, toggleEmail, toggleRole} = useUser();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
@@ -30,17 +30,24 @@ const Login = () => {
                 password: formData.password,
             });
             
-            console.log(response.data);
+
+            if (response.status == 204) {
+                toast.error('Login failed. User not Found');
+                return
+            }
+
+            if (response.status == 203) {
+                toast.error('Login failed. Invalid Credentials');
+                return
+            }
 
             if (response.data.token) {
                 // Store the token in local storage
                 localStorage.setItem('token', response.data.token);
                 
-                // Update Zustand store to set authenticated state and user email
                 toggleAuth();  // Set isAuthenticated to true
-                toggleEmail(formData.email);  // Set user email in the Zustand store
-
-                
+                toggleEmail(formData.email); 
+                toggleRole(response.data.role); // Set user email in the Zustand store
 
                 // Show success toast notification
                 toast.success('Logged in successfully!');

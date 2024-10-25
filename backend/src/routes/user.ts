@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import prisma from "../dbSeed";
 import * as jwt from 'jsonwebtoken';
+import { Role } from "@prisma/client";
 
 const app = new Hono();
 app.use('/*', cors());
@@ -15,12 +16,10 @@ app.get("/user", (c) => {
 app.post("/signUp", async (c) => {
     const { email, password } = await c.req.json();
 
-    console.log(email, password);
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-        return c.json({ message: "User already exists" }, 409);
+        return c.json({ message: "User already exists" }, 204);
     }
-    console.log("after if condition")
     const hashedPassword = await Bun.password.hash(password);
 
     try {
@@ -30,7 +29,6 @@ app.post("/signUp", async (c) => {
                 password: hashedPassword,
             }
         });
-        console.log("after creating new user")
         // Generate a JWT token
         const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: '7h' });
 
@@ -52,11 +50,11 @@ app.post("/login", async (c) => {
     console.log(email, password);
     const user = await prisma.user.findFirst({ where: { email } });
     if (user === null ) {
-        return c.json({ message: "User not found" }, 202);
+        return c.json({ message: "User not found" }, 204);
     }
     const isPasswordValid = await Bun.password.verify(password, user.password);
     if (!isPasswordValid) {
-        return c.json({ message: "Invalid credentials" }, 202);
+        return c.json({ message: "Invalid credentials" }, 203);
     }
 
     const token = jwt.sign({ email: user.email }, SECRET_KEY, { expiresIn: '7h' });
@@ -64,7 +62,8 @@ app.post("/login", async (c) => {
     return c.json({
         message: "Login successful",
         token,
-        isAuthenticated: true
+        isAuthenticated: true,
+        role: user.role
     });
 });
 

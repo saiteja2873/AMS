@@ -33,6 +33,15 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
       email : formData.email,
       password : formData.password
     });
+    if (response.status === 204) {
+      toast.error('Account already exists');
+      return;
+    }
+    if (response.status !== 200) {
+      toast.error('Failed to create account');
+      return;
+    }
+    toast.success('Account created successfully');
     console.log(response.data);
   };
   

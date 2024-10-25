@@ -12,11 +12,11 @@ import CostTrackingAdm from "./costTrackingAdm";
 import { Toaster } from "sonner";
 import useUser from '../components/state';
 import About from "./about";
-
+import AdmServices from "./admServices";
 
 function App() {
-  const {isAuthenticated} = useUser((state : any) => state.isAuthenticated);
-  console.log(isAuthenticated);
+  const authenticated = useUser((state) => state.isAuthenticated);
+  const user_role = useUser((state) => state.user_role);
 
   return (
     <>
@@ -24,15 +24,16 @@ function App() {
       <Toaster position="top-right" richColors closeButton />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/services" element={isAuthenticated ? <Servics /> : <Login />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/services" element={authenticated ? (user_role === 'ADMIN' ? <AdmServices/> : <Servics />) : <Login />} />
+        <Route path="/login" element={authenticated ? < Landing/> : <Login />} />
         <Route path="/signUp" element={<SignUp />} />
         <Route path="/services/costTracking" element={<CostTracking />} /> {/* Keep only one */}
-        <Route path="/services/costTrackingAdm" element={<CostTrackingAdm />} />
+        <Route path="/admServices/costTrackingAdm" element={<CostTrackingAdm />} />
         <Route path="/costCalci" element={<CostCalci />} /> {/* Corrected path */}
         <Route path="/services/weatherComponent" element={<WeatherComponent />} />
         <Route path="/services/priceTracking" element={<PriceTracking />} />
         <Route path="/about" element={<About />} />
+        <Route path="/admServices" element={<AdmServices/>}/>
       </Routes>
     </>
   );
