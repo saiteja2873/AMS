@@ -31,17 +31,17 @@ function Services() {
           </Link>
         </button>
 
-        <button>
+        {/* <button>
           <div className="absolute top-[55%] left-[27%] box-border h-[30%] w-[20%] shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[-10px_-10px_30px_4px_rgba(119,154,164,1.000),_30px_1px_30px_4px_rgba(45,78,255,0.15)] rounded-md transition duration-500 backdrop-blur-3xl backdrop-brightness-150 hover:">
             <div className="absolute top-[40%] left-[32%] font-mona-sans text-xl text-customWhite">
               Price Tracking
             </div>
           </div>
-        </button>
+        </button> */}
 
         <button>
           <Link to={"../services/weatherComponent"}>
-            <div className="absolute top-[55%] left-[55%] box-border h-[30%] w-[20%] shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[-10px_-10px_30px_4px_rgba(119,154,164,1.000),_30px_1px_30px_4px_rgba(45,78,255,0.15)] rounded-md transition duration-500 backdrop-blur-3xl backdrop-brightness-150">
+            <div className="absolute top-[57%] left-[41%] box-border h-[30%] w-[20%] shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[-10px_-10px_30px_4px_rgba(119,154,164,1.000),_30px_1px_30px_4px_rgba(45,78,255,0.15)] rounded-md transition duration-500 backdrop-blur-3xl backdrop-brightness-150">
               <div className="absolute top-[40%] left-[25%] font-mona-sans text-xl text-customWhite">
                 Weather Forecast
               </div>

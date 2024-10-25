@@ -69,7 +69,7 @@ const CostTracking: React.FC = () => {
                     setDistricts([]);
                 }
             } else {
-                toast.error('Failed to fetch crop details');
+                toast.error('No Crop Data Found');
             }
         } catch (error) {
             if (axios.isAxiosError(error)) {

@@ -1,19 +1,27 @@
 import React, { useState, FormEvent } from 'react';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 const CostTrackingAdm: React.FC = () => {
     const [selectedState, setSelectedState] = useState<string>('');
     const [selectedDistrict, setSelectedDistrict] = useState<string>('');
     const [selectedCrop, setSelectedCrop] = useState<string>(''); 
-    const [seedsCost, setSeedsCost] = useState<number>();
-    const [irrigationCost, setIrrigationCost] = useState<number>();
-    const [fertilizerCost, setFertilizerCost] = useState<number>();
-    const [labourCost, setLabourCost] = useState<number>();
-    const [msp, setMsp] = useState<number>();
-    const [marketPrice, setMarketPrice] = useState<number>();
+    const [seedsCost, setSeedsCost] = useState<number | undefined>();
+    const [irrigationCost, setIrrigationCost] = useState<number | undefined>();
+    const [fertilizerCost, setFertilizerCost] = useState<number | undefined>();
+    const [labourCost, setLabourCost] = useState<number | undefined>();
+    const [msp, setMsp] = useState<number | undefined>();
+    const [marketPrice, setMarketPrice] = useState<number | undefined>();
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        // Validation
+        if (!selectedCrop || !selectedState || !selectedDistrict || !msp || !marketPrice) {
+            toast.error("Please fill in all required fields.");
+            return;
+        }
+
         try {
             const response = await axios.post('http://localhost:4000/crop', {
                 crop: selectedCrop,
@@ -27,8 +35,10 @@ const CostTrackingAdm: React.FC = () => {
                 labourCost,
             });
 
+            toast.success("Crop data submitted successfully!");
             console.log(response.data); 
         } catch (error) {
+            toast.error("Error submitting the form");
             console.error("Error submitting the form", error);
         }
     };
@@ -44,6 +54,9 @@ const CostTrackingAdm: React.FC = () => {
         <div >
         <div className='absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite'>Cost Tracking</div>
             <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[90%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
+                {/* Toast Container */}
+                {/* <Toaster position="top-center" reverseOrder={false} /> */}
+                
                 <form onSubmit={handleSubmit}>
                     <div className='absolute top-[6%] left-[43%] text-customWhite font-mona-sans text-2xl text-center'>Admin</div>
                     <div className="absolute top-[18%] left-[25%] text-customWhite font-medium">
@@ -76,8 +89,8 @@ const CostTrackingAdm: React.FC = () => {
                     <div className="absolute top-[42%] left-[25%] text-customWhite font-medium">
                         Seeds Cost :
                         <input 
-                            type='text' 
-                            value={seedsCost} 
+                            type='number' 
+                            value={seedsCost || ''} 
                             onChange={(e) => setSeedsCost(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
@@ -85,8 +98,8 @@ const CostTrackingAdm: React.FC = () => {
                     <div className="absolute top-[50%] left-[25%] text-customWhite font-medium">
                         Irrigation Cost :
                         <input 
-                            type='text' 
-                            value={irrigationCost} 
+                            type='number' 
+                            value={irrigationCost || ''} 
                             onChange={(e) => setIrrigationCost(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
@@ -94,8 +107,8 @@ const CostTrackingAdm: React.FC = () => {
                     <div className="absolute top-[58%] left-[25%] text-customWhite font-medium">
                         Fertilizer Cost :
                         <input 
-                            type='text' 
-                            value={fertilizerCost} 
+                            type='number' 
+                            value={fertilizerCost || ''} 
                             onChange={(e) => setFertilizerCost(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
@@ -103,17 +116,17 @@ const CostTrackingAdm: React.FC = () => {
                     <div className="absolute top-[66%] left-[25%] text-customWhite font-medium">
                         Labour Cost :
                         <input 
-                            type='text' 
-                            value={labourCost} 
+                            type='number' 
+                            value={labourCost || ''} 
                             onChange={(e) => setLabourCost(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
                     </div>
                     <div className="absolute top-[74%] left-[25%] text-customWhite font-medium">
-                        Msp :
+                        MSP :
                         <input 
-                            type='text' 
-                            value={msp} 
+                            type='number' 
+                            value={msp || ''} 
                             onChange={(e) => setMsp(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
@@ -121,8 +134,8 @@ const CostTrackingAdm: React.FC = () => {
                     <div className="absolute top-[82%] left-[25%] text-customWhite font-medium">
                         Market Price :
                         <input 
-                            type='text' 
-                            value={marketPrice} 
+                            type='number' 
+                            value={marketPrice || ''} 
                             onChange={(e) => setMarketPrice(parseFloat(e.target.value))}
                             className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
                         />
