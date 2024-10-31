@@ -5,12 +5,22 @@ import { cors } from "hono/cors";
 const app = new Hono();
 app.use('/*', cors());
 
+app.get('/names', async (c) => {
+    try {
+        const crops = await prisma.crop.findMany();
+        const crop_names = Array.from(new Set(crops.map((crop) => crop.crop)));
+        return c.json({crops: crop_names}, 200)
+
+    } catch (error) {
+        return c.json({error: "Something Went Wrong"}, 401)
+           
+    }
+})
 
 app.get('/', async (c) => {
     const crop = c.req.query("crop");
     const state = c.req.query("state");
     const district = c.req.query("district");
-    console.log(crop, state, district)
     if (!crop || !state || !district) return c.json({error: "Please provide crop, state and district"}, 401)
     try {
         const targetCrop = await prisma.crop.findFirst({
@@ -58,7 +68,6 @@ app.post('/', async(c) => {
         
         }
     ) 
-    console.log("in ");
         return c.json({crop: newCrop, cost: newCropCost}, 200);
     } catch (err) {
         return c.json({error: "Something went wrong"}, 401);

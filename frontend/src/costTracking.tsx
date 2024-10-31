@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { type Crop } from '../components/types';
@@ -12,6 +12,24 @@ const CostTracking: React.FC = () => {
     const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
     const [loadingCompare, setLoadingCompare] = useState<boolean>(false);
     const tableRef = useRef<HTMLDivElement>(null);
+    const [cropNames, setCropNames] = useState<string[]>([]);
+
+    useEffect(() => {
+        const fetchCropData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/crop/names');
+                if (response.status !== 200) {
+                    throw new Error('Failed to fetch crop data');
+                }
+                console.log(response.data);
+                
+                setCropNames(response.data.crops);
+            } catch (error) {
+                console.error('Error fetching crop data:', error);
+            }
+        };
+        fetchCropData();
+    }, [])
 
     const districtsByState: Record<string, string[]> = {
         Tamilnadu: ['Chennai', 'Coimbatore', 'Madurai'],
@@ -126,12 +144,11 @@ const CostTracking: React.FC = () => {
                                     onChange={handleCropChange}
                                 >
                                     <option value="">Select Crop</option>
-                                    <option value="Paddy">Paddy</option>
-                                    <option value="Wheat">Wheat</option>
-                                    <option value="Cotton">Cotton</option>
-                                    <option value="Mirchi">Mirchi</option>
-                                    <option value="Maize">Maize</option>
-                                    <option value="Barley">Barley</option>
+                                    { 
+                                        cropNames.length > 0 && cropNames.map((cropname) => (
+                                            <option key={cropname} value={cropname}>{cropname}</option>
+                                        ) )
+                                    }
                                 </select>
                             </div>
 
