@@ -3,14 +3,14 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { type Crop } from '../components/types';
 
-const CostTracking: React.FC = () => {
+const AdmUpdateCropData: React.FC = () => {
     const [selectedState, setSelectedState] = useState<string>('');
     const [selectedDistrict, setSelectedDistrict] = useState<string>('');
     const [selectedCrop, setSelectedCrop] = useState<string>('');
     const [districts, setDistricts] = useState<string[]>([]);
     const [data, setData] = useState<Crop[]>([]);
     const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-    const [loadingCompare, setLoadingCompare] = useState<boolean>(false);
+    const [editingCrop, setEditingCrop] = useState<Crop | null>(null); // Track crop being edited
     const tableRef = useRef<HTMLDivElement>(null);
 
     const districtsByState: Record<string, string[]> = {
@@ -51,7 +51,6 @@ const CostTracking: React.FC = () => {
     ) => {
         e.preventDefault();
 
-        // Form validation
         if (!selectedState || !selectedDistrict || !selectedCrop) {
             toast.error('Please select a crop, state, and district.');
             return;
@@ -59,8 +58,6 @@ const CostTracking: React.FC = () => {
 
         if (isSubmit) {
             setLoadingSubmit(true);
-        } else {
-            setLoadingCompare(true);
         }
 
         try {
@@ -97,12 +94,60 @@ const CostTracking: React.FC = () => {
             console.error('Error:', error);
         } finally {
             setLoadingSubmit(false);
-            setLoadingCompare(false);
         }
     };
 
+    const handleEditClick = (crop: Crop) => {
+        setEditingCrop(crop); // Set the crop being edited
+    };
+
+    const handleUpdateSubmit = async (updatedCrop: Crop) => {
+        try {
+            const response = await axios.put('http://localhost:4000/crop/update', {
+                id: updatedCrop.id,
+                crop: updatedCrop.crop, 
+                state: updatedCrop.state,
+                district: updatedCrop.district,
+                msp: updatedCrop.msp,
+                marketPrice: updatedCrop.marketPrice,
+                seedsCost: updatedCrop.seedsCost,
+                irrigationCost: updatedCrop.irrigationCost,
+                fertilizerCost: updatedCrop.fertilizerCost,
+                labourCost: updatedCrop.labourCost,
+            });
+    
+            if (response.status === 200) {
+                setData((prevData) =>
+                    prevData.map((item) =>
+                        item.id === updatedCrop.id ? updatedCrop : item
+                    )
+                );
+                toast.success('Crop data updated successfully');
+                setEditingCrop(null); // Reset editing state
+            } else {
+                toast.error('Failed to update crop data');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('An error occurred while updating crop data');
+        }
+    };
+
+    const handleDelete = async (id: number) => {
+        try {
+            await axios.delete(`http://localhost:4000/crop/${id}`);
+            setData((prevData) => prevData.filter((item) => item.id !== id));
+            toast.success('Crop data deleted successfully');
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('An error occurred while deleting crop data');
+        }
+    }
+    
+
     return (
         <>
+            {/* Background and Form */}
             <div
                 style={{
                     background:
@@ -113,7 +158,7 @@ const CostTracking: React.FC = () => {
             >
                 <div className="bg-customGradient h-screen w-full brightness-105">
                     <div className="absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite">
-                        Cost Tracking
+                        Update Crop Data
                     </div>
                     <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[50%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
                         <form onSubmit={(e) => handleSubmit(e, true)}>
@@ -173,62 +218,43 @@ const CostTracking: React.FC = () => {
                             <button
                                 type="submit"
                                 disabled={loadingSubmit}
-                                className="absolute top-[80%] left-[30%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
+                                className="absolute top-[80%] left-[41%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
                             >
                                 {loadingSubmit ? 'Loading...' : 'Submit'}
-                            </button>
-
-                            {/* Compare Button */}
-                            <button
-                                type="button"
-                                onClick={(e) =>
-                                    handleSubmit(
-                                        e as unknown as FormEvent<HTMLFormElement>,
-                                        false
-                                    )
-                                }
-                                disabled={loadingCompare}
-                                className="absolute top-[80%] left-[50%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
-                            >
-                                {loadingCompare ? 'Loading...' : 'Compare'}
                             </button>
                         </form>
                     </div>
                 </div>
 
-                {/* Table with Ref */}
+                {/* Data Table */}
                 {data.length > 0 && (
                     <div ref={tableRef}>
-                        <ShowResults data={data} />
+                        <ShowResults data={data} onEdit={handleEditClick} onDelete={handleDelete} />
                     </div>
+                )}
+
+                {/* Update Form */}
+                {editingCrop && (
+                    <UpdateForm crop={editingCrop} onSubmit={handleUpdateSubmit} />
                 )}
             </div>
         </>
     );
 };
 
-function ShowResults({ data }: { data: Crop[] }) {
-
-    const calculateComparisonSummary = (data: Crop[]) => {
-        if (data.length < 2) return null;
-    
-        // Calculate total cost for each crop and find the one with the lowest total cost
-        const lowestCostCrop = data.reduce((min, crop) => {
-            const totalCost = crop.irrigationCost + crop.seedsCost + crop.labourCost; // Calculate total cost
-            const minTotalCost = min.totalCost; // Access total cost of the current minimum
-    
-            // Compare and return the crop with the lowest total cost
-            return totalCost < minTotalCost ? { crop, totalCost } : min;
-        }, { crop: data[0], totalCost: data[0].irrigationCost + data[0].seedsCost + data[0].labourCost });
-    
-        return `The Crop with the Lowest Total Cost is ${lowestCostCrop.crop.crop} from ${lowestCostCrop.crop.district}, ${lowestCostCrop.crop.state} with a Total Cost of Rs. ${lowestCostCrop.totalCost} `;
-    };
-    
-
+function ShowResults({
+    data,
+    onEdit,
+    onDelete,
+}: {
+    data: Crop[];
+    onEdit: (crop: Crop) => void;
+    onDelete: (id: number) => void;
+}) {
     return (
-        <div className="p-8">
-            <div className="absolute top-[100%] left-[15%]">
-                <table className="relative left-[-7%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium">
+        <div className="p-8 flex justify-center items-center">
+            <div className="">
+                <table className="min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium">
                     <thead>
                         <tr>
                             <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Crop</th>
@@ -238,6 +264,9 @@ function ShowResults({ data }: { data: Crop[] }) {
                             <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Irrigation Cost (Rs)</th>
                             <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Fertilizer Cost (Rs)</th>
                             <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Labour Cost (Rs)</th>
+                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">MSP (Rs)</th>
+                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Market Price (Rs)</th>
+                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -250,18 +279,74 @@ function ShowResults({ data }: { data: Crop[] }) {
                                 <td className="border border-customWhite px-10 py-2 text-center">{item.irrigationCost}</td>
                                 <td className="border border-customWhite px-10 py-2 text-center">{item.fertilizerCost}</td>
                                 <td className="border border-customWhite px-10 py-2 text-center">{item.labourCost}</td>
+                                <td className="border border-customWhite px-10 py-2 text-center">{item.msp}</td>
+                                <td className="border border-customWhite px-10 py-2 text-center">{item.marketPrice}</td>
+                                <td className="border border-customWhite px-10 py-2 text-center">
+                                    <div className='flex gap-2'>
+                                    <button
+                                        onClick={() => onEdit(item)}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                                    >
+                                        Update
+                                    </button>
+
+                                    <button
+                                        onClick={() => onDelete(item.id)}
+                                        className="bg-red-500 text-white px-4 py-2 rounded"
+                                        >
+                                        Delete
+                                    </button>
+                                    </div>
+                                </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
-                {data.length > 1 && (
-                            <div className="mt-4 p-4 relative left-[-7%] top-12 bg-gray-800 text-white rounded-lg">
-                                <strong>Comparison Summary:</strong> {calculateComparisonSummary(data)}
-                            </div>
-                        )}
             </div>
         </div>
     );
 }
 
-export default CostTracking;
+function UpdateForm({
+    crop,
+    onSubmit,
+}: {
+    crop: Crop;
+    onSubmit: (updatedCrop: Crop) => void;
+}) {
+    const [formData, setFormData] = useState<Crop>(crop);
+
+
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: parseFloat(value) });
+    };
+
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        onSubmit(formData);
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-8 rounded-lg shadow-lg">
+                <h2 className="text-2xl font-bold mb-4">Update Crop Data</h2>
+                <label>Seeds Cost</label>
+                <input name="seedsCost" value={formData.seedsCost} onChange={handleChange} />
+                <label>Irrigation Cost</label>
+                <input name="irrigationCost" value={formData.irrigationCost} onChange={handleChange} />
+                <label>Fertilizer Cost</label>
+                <input name="fertilizerCost" value={formData.fertilizerCost} type="number" onChange={handleChange} />
+                <label>Labour Cost</label>
+                <input name="labourCost" value={formData.labourCost} onChange={handleChange} />
+                <label>MSP</label>
+                <input name="msp" value={formData.msp} onChange={handleChange} />
+                <label>Market Price</label>
+                <input name="marketPrice" value={formData.marketPrice} onChange={handleChange} />
+                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">Submit</button>
+            </div>
+        </form>
+    );
+}
+
+export default AdmUpdateCropData;

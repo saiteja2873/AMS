@@ -7,6 +7,7 @@ type UserState = {
   toggleAuth: () => void;
   toggleEmail: (login_email: string) => void;
   toggleRole: (login_role: string) => void;
+  toggleAuth2: () => void;
 }
 
 const useUser = create<UserState>((set) => ({
@@ -15,6 +16,7 @@ const useUser = create<UserState>((set) => ({
   user_role : 'USER',
   toggleAuth: () => set((state) => ({ isAuthenticated: !state.isAuthenticated })),  // Toggle between true/false
   toggleEmail: (login_email: string) => set(() => ({ email: login_email })),
+  toggleAuth2: () => set(() => ({ isAuthenticated: true })),
   toggleRole: (login_role: string) => set(() => ({ user_role: login_role }))
 }));
 

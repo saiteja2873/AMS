@@ -65,12 +65,12 @@ app.post('/', async(c) => {
     }
 })
 
-app.put('/', async (c) => {
-    const {crop, state, district, msp, marketPrice, seedsCost, irrigationCost, fertilizerCost, labourCost } =  await c.req.json();
+app.put('/update', async (c) => {
+    const {id,crop, state, district, msp, marketPrice, seedsCost, irrigationCost, fertilizerCost, labourCost } =  await c.req.json();
     try {
         const updatedCrop = await prisma.crop.update({
             where: {
-                id: crop.id
+                id
             },
             data: {
                 crop,
@@ -80,7 +80,7 @@ app.put('/', async (c) => {
                 marketPrice
             }
         });
-
+        console.log(updatedCrop)
         const updatedCropCost = await prisma.costTracking.update({
             where: {
                 cropId: updatedCrop.id
@@ -92,22 +92,36 @@ app.put('/', async (c) => {
                 labourCost
             }
         });
+        console.log(updatedCropCost)
         return c.json({crop: updatedCrop, cost: updatedCropCost}, 200)
     } catch (error) {
+        console.log(error)
         return c.json({error: "Something went wrong"}, 401)
     }
 });
 
-app.delete('/', async (c) => {
-    const {id} = await c.req.json();
+app.delete('/:id', async (c) => {
+    const {id} =  c.req.param();
+    console.log(id);
+    
     try {
+        console.log('here');
+        const deletedCropCost = await prisma.costTracking.delete({
+            where: {
+                cropId: id
+            }
+        })
+        console.log('there')
         const deletedCrop = await prisma.crop.delete({
             where: {
                 id
             }
         })
+        if (!deletedCrop) return c.json({error: "Crop Not Found"}, 404)
         return c.json({deletedCrop}, 200)
     } catch (error) {
+        console.log(error);
+        
         return c.json({error: "Something went wrong"}, 401)
     }
 })

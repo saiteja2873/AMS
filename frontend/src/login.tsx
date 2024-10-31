@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner"; // Assuming you're using sonner for toast messages
@@ -15,7 +15,7 @@ const Login = () => {
     password: "",
   });
   const [loading, setLoading] = useState<boolean>(false); // Loading state
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize navigate for programmatic navigation
 
   // Access Zustand store actions
   const { toggleAuth, toggleEmail, toggleRole } = useUser();
@@ -56,7 +56,7 @@ const Login = () => {
         toggleEmail(formData.email);
         toggleRole(response.data.role);
 
-        toast.success("Logged in successfully!");// Delay to allow loading spinner to display briefly
+        toast.success("Logged in successfully!"); // Delay to allow loading spinner to display briefly
       }
     } catch (error) {
       setLoading(false);
@@ -65,12 +65,27 @@ const Login = () => {
     }
   };
 
+  const handleSignUpClick = () => {
+    // Show loading toast for sign up
+    const loadingToast = toast.loading("Loading Sign up...", {
+      style: {
+        background: "linear-gradient(126.3deg, rgba(242,227,213,1.000) 80.2%, rgba(242,227,213,1.000) 2%)",
+      },
+    });
+
+    // Navigate after a brief delay
+    setTimeout(() => {
+      navigate("../signUp");
+      toast.dismiss(loadingToast); // Dismiss the loading toast after navigation
+    }, 1200); // Adjust the delay time as needed
+  };
+
   return (
     <div
       style={{
         background:
           "linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)",
-        height: "100vh",
+        height: "101vh",
         margin: 0,
       }}
     >
@@ -185,12 +200,12 @@ const Login = () => {
                 </button>
                 <p className="text-sm font-light text-gray-300 dark:text-gray-400">
                   Don’t have an account yet?{" "}
-                  <Link
-                    to={"../signUp"}
-                    className="font-medium text-primary-200 hover:underline dark:text-primary-500"
+                  <span
+                    onClick={handleSignUpClick}
+                    className="font-medium text-primary-200 hover:underline dark:text-primary-500 cursor-pointer"
                   >
                     Sign up
-                  </Link>
+                  </span>
                 </p>
               </form>
             </div>

@@ -53,6 +53,12 @@ const WeatherComponent: React.FC = () => {
         fetchWeatherData(city);
     };
 
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            handleSubmit();
+        }
+    };
+
     const formatDate = (timestamp: number) => {
         const date = new Date(timestamp * 1000);
         const day = String(date.getDate()).padStart(2, '0');
@@ -88,6 +94,7 @@ const WeatherComponent: React.FC = () => {
                         type="text"
                         value={city}
                         onChange={handleCityChange}
+                        onKeyDown={handleKeyPress}  // Add this line
                         placeholder="Enter Place Name or pincode (e.g., Delhi)"
                     />
                     <button onClick={handleSubmit} className='absolute left-[57%] top-5 border-2 border-customBlue rounded-2xl px-3 py-1 hover:bg-customBlue hover:text-customWhite transition duration-500'>Get Forecast</button>
@@ -99,14 +106,14 @@ const WeatherComponent: React.FC = () => {
                     {weatherData && !loading && (
                         <div className='absolute top-28 left-[2%]'>
                             <h2 className='absolute top-[-1.5%] left-[16%] font-medium'>City: {weatherData.city.name}, {weatherData.city.country}</h2>
-                            <table className='relative left-[-2%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium'>
+                            <table className='relative left-[-4%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium'>
                                 <thead>
                                     <tr>
                                         <th className='border border-customWhite px-20 py-2 text-center text-gray-900 bg-gray-400'>Date</th>
-                                        <th className='border border-customWhite px-10 py-2 text-center text-gray-900 bg-gray-400'>Time</th>
+                                        <th className='border border-customWhite px-20 py-2 text-center text-gray-900 bg-gray-400'>Time</th>
                                         <th className='border border-customWhite px-10 py-2 text-center text-gray-900 bg-gray-400'>Temperature (°C)</th>
                                         <th className='border border-customWhite px-10 py-2 text-center text-gray-900 bg-gray-400'>Weather</th>
-                                        <th className='border border-customWhite px-10 py-2 text-center text-gray-900 bg-gray-400'>Wind (km/h)</th>
+                                        <th className='border border-customWhite px-20 py-2 text-center text-gray-900 bg-gray-400'>Wind (km/h)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -121,7 +128,7 @@ const WeatherComponent: React.FC = () => {
                                                         <td rowSpan={dayData.length} className='border border-customWhite px-10 py-2 text-center'>{date}</td>
                                                     )}
                                                     <td className='border border-customWhite px-10 py-2 text-center'>{formattedTime}</td>
-                                                    <td className='border border-customWhite px-10 py-2 text-center'>{day.main.temp} °C</td>
+                                                    <td className='border border-customWhite px-10 py-5 text-center'>{day.main.temp} °C</td>
                                                     <td className='border border-customWhite px-10 py-2 text-center'>{day.weather[0].description}</td>
                                                     <td className='border border-customWhite px-10 py-2 text-center'>{windSpeedKmh} km/h</td>
                                                 </tr>

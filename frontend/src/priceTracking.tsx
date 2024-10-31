@@ -213,20 +213,20 @@ function ShowResults({ data }: { data: Crop[] }) {
         if (data.length < 2) return null;
 
         const highestMarketPrice = data.reduce((max, crop) => (crop.marketPrice > max.marketPrice ? crop : max), data[0]);
-        return `The Crop with the Highest Market Price is ${highestMarketPrice.crop} from ${highestMarketPrice.district}, ${highestMarketPrice.state} with a market price of ${highestMarketPrice.marketPrice}.`;
+        return `The Crop with the Highest Market Price is ${highestMarketPrice.crop} from ${highestMarketPrice.district}, ${highestMarketPrice.state} with a Market price of Rs. ${highestMarketPrice.marketPrice}`;
     };
 
     return (
         <div className="p-8">
             <div className="absolute top-[100%] left-[15%]">
-                <table className="relative left-[2%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium">
+                <table className="relative left-[-3%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium">
                     <thead>
                         <tr>
                             <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">Crop</th>
                             <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">State</th>
                             <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">District</th>
-                            <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">MSP</th>
-                            <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">Market Price</th>
+                            <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">MSP (Rs)</th>
+                            <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">Market Price (Rs)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -242,7 +242,7 @@ function ShowResults({ data }: { data: Crop[] }) {
                     </tbody>
                 </table>
                 {data.length > 1 && (
-                            <div className="mt-4 p-4 relative left-[2%] top-12 bg-gray-800 text-white rounded-lg">
+                            <div className="mt-4 p-4 relative left-[-3%] top-12 bg-gray-800 text-white rounded-lg">
                                 <strong>Comparison Summary:</strong> {calculateComparisonSummary(data)}
                             </div>
                         )}
