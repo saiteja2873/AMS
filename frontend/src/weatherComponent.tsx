@@ -76,7 +76,7 @@ const WeatherComponent: React.FC = () => {
         <>
         <div style={{ 
                 background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)', 
-                height: '330vh',
+                height: '460vh',
                 margin: 0 
             }}>
             <h1 className='absolute left-[45%] top-[15%] font-bold text-2xl text-customWhite'>Weather Forecast</h1>
@@ -98,11 +98,11 @@ const WeatherComponent: React.FC = () => {
 
                     {weatherData && !loading && (
                         <div className='absolute top-28 left-[2%]'>
-                            <h2 className='absolute top-[-2%] left-[16%] font-medium'>City: {weatherData.city.name}, {weatherData.city.country}</h2>
-                            <table className='relative left-20 top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium'>
+                            <h2 className='absolute top-[-1.5%] left-[16%] font-medium'>City: {weatherData.city.name}, {weatherData.city.country}</h2>
+                            <table className='relative left-[-2%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium'>
                                 <thead>
                                     <tr>
-                                        <th className='border border-customWhite px-10 py-2 text-center text-gray-900 bg-gray-400'>Date</th>
+                                        <th className='border border-customWhite px-20 py-2 text-center text-gray-900 bg-gray-400'>Date</th>
                                         <th className='border border-customWhite px-10 py-2 text-center text-gray-900 bg-gray-400'>Time</th>
                                         <th className='border border-customWhite px-10 py-2 text-center text-gray-900 bg-gray-400'>Temperature (°C)</th>
                                         <th className='border border-customWhite px-10 py-2 text-center text-gray-900 bg-gray-400'>Weather</th>
