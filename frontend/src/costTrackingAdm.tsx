@@ -22,8 +22,9 @@ const CostTrackingAdm: React.FC = () => {
             return;
         }
 
-        try {
-            const response = await axios.post('http://localhost:4000/crop', {
+        // Use toast.promise for loading, success, and error handling
+        toast.promise(
+            axios.post('http://localhost:4000/crop', {
                 crop: selectedCrop,
                 state: selectedState,
                 district: selectedDistrict,
@@ -33,14 +34,13 @@ const CostTrackingAdm: React.FC = () => {
                 irrigationCost,
                 fertilizerCost,
                 labourCost,
-            });
-
-            toast.success("Crop data submitted successfully!");
-            console.log(response.data); 
-        } catch (error) {
-            toast.error("Error submitting the form");
-            console.error("Error submitting the form", error);
-        }
+            }),
+            {
+                loading: "Submitting crop data...",
+                success: "Crop data submitted successfully!",
+                error: "Error submitting the form"
+            }
+        );
     };
 
     return (
@@ -52,10 +52,7 @@ const CostTrackingAdm: React.FC = () => {
                 margin: 0 
             }}>
         <div >
-        {/* <div className='absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite'>Add Crops</div> */}
             <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[90%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
-                {/* Toast Container */}
-                {/* <Toaster position="top-center" reverseOrder={false} /> */}
                 
                 <form onSubmit={handleSubmit}>
                     <div className='absolute top-[6%] left-[42%] font-mona-sans text-2xl font-medium text-center text-gray-950'>Add Crops</div>

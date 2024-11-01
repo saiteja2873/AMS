@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { type Crop } from '../components/types';
@@ -12,6 +12,8 @@ const PriceTracking: React.FC = () => {
     const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
     const [loadingCompare, setLoadingCompare] = useState<boolean>(false);
     const tableRef = useRef<HTMLDivElement>(null);
+    const [cropNames, setCropNames] = useState<string[]>([]);
+
 
     const districtsByState: Record<string, string[]> = {
         Tamilnadu: ['Chennai', 'Coimbatore', 'Madurai'],
@@ -20,6 +22,23 @@ const PriceTracking: React.FC = () => {
         Telangana: ['Hyderabad', 'Warangal', 'Nizamabad'],
         Maharastra: ['Mumbai', 'Pune', 'Nagpur'],
     };
+
+    useEffect(() => {
+        const fetchCropData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/crop/names');
+                if (response.status !== 200) {
+                    throw new Error('Failed to fetch crop data');
+                }
+                console.log(response.data);
+                
+                setCropNames(response.data.crops);
+            } catch (error) {
+                console.error('Error fetching crop data:', error);
+            }
+        };
+        fetchCropData();
+    }, [])
 
     const handleStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
         const state = event.target.value;
@@ -44,6 +63,7 @@ const PriceTracking: React.FC = () => {
                 item.district === newCropData.district
         );
     };
+
 
     const handleSubmit = async (
         e: FormEvent<HTMLFormElement>,
@@ -107,7 +127,7 @@ const PriceTracking: React.FC = () => {
                 style={{
                     background:
                         'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)',
-                    height: '160vh',
+                    height: '190vh',
                     margin: 0,
                 }}
             >
@@ -126,12 +146,11 @@ const PriceTracking: React.FC = () => {
                                     onChange={handleCropChange}
                                 >
                                     <option value="">Select Crop</option>
-                                    <option value="Paddy">Paddy</option>
-                                    <option value="Wheat">Wheat</option>
-                                    <option value="Cotton">Cotton</option>
-                                    <option value="Mirchi">Mirchi</option>
-                                    <option value="Maize">Maize</option>
-                                    <option value="Barley">Barley</option>
+                                    { 
+                                        cropNames.length > 0 && cropNames.map((cropname) => (
+                                            <option key={cropname} value={cropname}>{cropname}</option>
+                                        ) )
+                                    }
                                 </select>
                             </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, FormEvent, useRef } from 'react';
+import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { type Crop } from '../components/types';
@@ -12,6 +12,24 @@ const AdmUpdateCropData: React.FC = () => {
     const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
     const [editingCrop, setEditingCrop] = useState<Crop | null>(null); // Track crop being edited
     const tableRef = useRef<HTMLDivElement>(null);
+    const [cropNames, setCropNames] = useState<string[]>([]);
+
+    useEffect(() => {
+        const fetchCropData = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/crop/names');
+                if (response.status !== 200) {
+                    throw new Error('Failed to fetch crop data');
+                }
+                console.log(response.data);
+                
+                setCropNames(response.data.crops);
+            } catch (error) {
+                console.error('Error fetching crop data:', error);
+            }
+        };
+        fetchCropData();
+    }, [])
 
     const districtsByState: Record<string, string[]> = {
         Tamilnadu: ['Chennai', 'Coimbatore', 'Madurai'],
@@ -171,12 +189,12 @@ const AdmUpdateCropData: React.FC = () => {
                                     onChange={handleCropChange}
                                 >
                                     <option value="">Select Crop</option>
-                                    <option value="Paddy">Paddy</option>
-                                    <option value="Wheat">Wheat</option>
-                                    <option value="Cotton">Cotton</option>
-                                    <option value="Mirchi">Mirchi</option>
-                                    <option value="Maize">Maize</option>
-                                    <option value="Barley">Barley</option>
+                                    { 
+                                        cropNames.length > 0 && cropNames.map((cropname) => (
+                                            <option key={cropname} value={cropname}>{cropname}</option>
+                                        ) )
+                                    }
+                                    
                                 </select>
                             </div>
 
@@ -329,21 +347,21 @@ function UpdateForm({
 
     return (
         <form onSubmit={handleSubmit} className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-[98%] h-[28%]">
                 <h2 className="text-2xl font-bold mb-4">Update Crop Data</h2>
-                <label>Seeds Cost</label>
-                <input name="seedsCost" value={formData.seedsCost} onChange={handleChange} />
-                <label>Irrigation Cost</label>
-                <input name="irrigationCost" value={formData.irrigationCost} onChange={handleChange} />
-                <label>Fertilizer Cost</label>
-                <input name="fertilizerCost" value={formData.fertilizerCost} type="number" onChange={handleChange} />
-                <label>Labour Cost</label>
-                <input name="labourCost" value={formData.labourCost} onChange={handleChange} />
-                <label>MSP</label>
-                <input name="msp" value={formData.msp} onChange={handleChange} />
-                <label>Market Price</label>
-                <input name="marketPrice" value={formData.marketPrice} onChange={handleChange} />
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">Submit</button>
+                <label className='absolute top-[49%] left-[4%]'>Seeds Cost</label>
+                <input className='absolute top-[48.5%] left-[10%] w-20 bg-gray-300 text-center py-1' name="seedsCost" value={formData.seedsCost} onChange={handleChange} />
+                <label className='absolute top-[49%] left-[19%]'>Irrigation Cost</label>
+                <input className='absolute top-[48.5%] left-[27%] w-20 bg-gray-300 text-center py-1' name="irrigationCost" value={formData.irrigationCost} onChange={handleChange} />
+                <label className='absolute top-[49%] left-[37%]'>Fertilizer Cost</label>
+                <input className='absolute top-[48.5%] left-[45%] w-20 bg-gray-300 text-center py-1' name="fertilizerCost" value={formData.fertilizerCost} type="number" onChange={handleChange} />
+                <label className='absolute top-[49%] left-[52%]'>Labour Cost</label>
+                <input className='absolute top-[48.5%] left-[59%] w-20 bg-gray-300 text-center py-1' name="labourCost" value={formData.labourCost} onChange={handleChange} />
+                <label className='absolute top-[49%] left-[69%]'>MSP</label>
+                <input className='absolute top-[48.5%] left-[72%] w-20 bg-gray-300 text-center py-1' name="msp" value={formData.msp} onChange={handleChange} />
+                <label className='absolute top-[49%] left-[80%]'>Market Price</label>
+                <input className='absolute top-[48.5%] left-[88%] w-20 bg-gray-300 text-center py-1' name="marketPrice" value={formData.marketPrice} onChange={handleChange} />
+                <button type="submit" className="absolute top-[55%] left-[47%] bg-blue-500 text-white px-4 py-2 rounded mt-4">Submit</button>
             </div>
         </form>
     );

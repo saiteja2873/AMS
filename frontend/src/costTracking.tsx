@@ -125,7 +125,7 @@ const CostTracking: React.FC = () => {
                 style={{
                     background:
                         'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)',
-                    height: '160vh',
+                    height: '190vh',
                     margin: 0,
                 }}
             >
@@ -251,10 +251,10 @@ function ShowResults({ data }: { data: Crop[] }) {
                             <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Crop</th>
                             <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">State</th>
                             <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">District</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Seeds Cost (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Irrigation Cost (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Fertilizer Cost (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Labour Cost (Rs)</th>
+                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Seeds Cost (Rs) per kg</th>
+                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Irrigation Cost (Rs) per acre</th>
+                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Fertilizer Cost (Rs) per kg</th>
+                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Labour Cost (Rs) per acre</th>
                         </tr>
                     </thead>
                     <tbody>
