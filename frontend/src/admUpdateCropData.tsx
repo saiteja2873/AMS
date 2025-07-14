@@ -80,7 +80,7 @@ const AdmUpdateCropData: React.FC = () => {
 
         try {
             const response = await axios.get(
-                `http://localhost:4000/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
+                `https://ams-yivz.onrender.com/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
             );
 
             if (response.status === 200) {
@@ -121,7 +121,7 @@ const AdmUpdateCropData: React.FC = () => {
 
     const handleUpdateSubmit = async (updatedCrop: Crop) => {
         try {
-            const response = await axios.put('http://localhost:4000/crop/update', {
+            const response = await axios.put('https://ams-yivz.onrender.com/crop/update', {
                 id: updatedCrop.id,
                 crop: updatedCrop.crop, 
                 state: updatedCrop.state,
@@ -153,7 +153,7 @@ const AdmUpdateCropData: React.FC = () => {
 
     const handleDelete = async (id: number) => {
         try {
-            await axios.delete(`http://localhost:4000/crop/${id}`);
+            await axios.delete(`https://ams-yivz.onrender.com/crop/${id}`);
             setData((prevData) => prevData.filter((item) => item.id !== id));
             toast.success('Crop data deleted successfully');
         } catch (error) {

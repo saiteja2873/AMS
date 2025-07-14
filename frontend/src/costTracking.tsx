@@ -17,7 +17,7 @@ const CostTracking: React.FC = () => {
     useEffect(() => {
         const fetchCropData = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/crop/names');
+                const response = await axios.get('https://ams-yivz.onrender.com/crop/names');
                 if (response.status !== 200) {
                     throw new Error('Failed to fetch crop data');
                 }
