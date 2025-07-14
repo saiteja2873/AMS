@@ -33,7 +33,7 @@ const SignUp = () => {
     setLoading(true); // Set loading to true
 
     try {
-      const response = await axios.post('http://localhost:4000/user/signUp', {
+      const response = await axios.post('https://ams-yivz.onrender.com/user/signUp', {
         email: formData.email,
         password: formData.password,
       });

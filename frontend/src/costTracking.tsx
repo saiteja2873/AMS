@@ -83,7 +83,7 @@ const CostTracking: React.FC = () => {
 
         try {
             const response = await axios.get(
-                `http://localhost:4000/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
+                `https://ams-yivz.onrender.com/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
             );
 
             if (response.status === 200) {

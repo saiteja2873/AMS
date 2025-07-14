@@ -24,7 +24,7 @@ const CostTrackingAdm: React.FC = () => {
 
         // Use toast.promise for loading, success, and error handling
         toast.promise(
-            axios.post('http://localhost:4000/crop', {
+            axios.post('https://ams-yivz.onrender.com/crop', {
                 crop: selectedCrop,
                 state: selectedState,
                 district: selectedDistrict,
