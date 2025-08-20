@@ -1,155 +1,167 @@
-import React, { useState, FormEvent } from 'react';
-import axios from 'axios';
-import { toast } from 'sonner';
+import React, { useState, FormEvent } from "react";
+import axios from "axios";
+import { toast } from "sonner";
 
 const CostTrackingAdm: React.FC = () => {
-    const [selectedState, setSelectedState] = useState<string>('');
-    const [selectedDistrict, setSelectedDistrict] = useState<string>('');
-    const [selectedCrop, setSelectedCrop] = useState<string>(''); 
-    const [seedsCost, setSeedsCost] = useState<number | undefined>();
-    const [irrigationCost, setIrrigationCost] = useState<number | undefined>();
-    const [fertilizerCost, setFertilizerCost] = useState<number | undefined>();
-    const [labourCost, setLabourCost] = useState<number | undefined>();
-    const [msp, setMsp] = useState<number | undefined>();
-    const [marketPrice, setMarketPrice] = useState<number | undefined>();
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedCrop, setSelectedCrop] = useState("");
+  const [seedsCost, setSeedsCost] = useState<number | undefined>();
+  const [irrigationCost, setIrrigationCost] = useState<number | undefined>();
+  const [fertilizerCost, setFertilizerCost] = useState<number | undefined>();
+  const [labourCost, setLabourCost] = useState<number | undefined>();
+  const [msp, setMsp] = useState<number | undefined>();
+  const [marketPrice, setMarketPrice] = useState<number | undefined>();
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-        // Validation
-        if (!selectedCrop || !selectedState || !selectedDistrict || !msp || !marketPrice) {
-            toast.error("Please fill in all required fields.");
-            return;
-        }
+    if (!selectedCrop || !selectedState || !selectedDistrict || !msp || !marketPrice) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
 
-        // Use toast.promise for loading, success, and error handling
-        toast.promise(
-            axios.post('https://ams-yivz.onrender.com/crop', {
-                crop: selectedCrop,
-                state: selectedState,
-                district: selectedDistrict,
-                msp,
-                marketPrice,
-                seedsCost,
-                irrigationCost,
-                fertilizerCost,
-                labourCost,
-            }),
-            {
-                loading: "Submitting crop data...",
-                success: "Crop data submitted successfully!",
-                error: "Error submitting the form"
-            }
-        );
-    };
-
-    return (
-        <> 
-        <div 
-        style={{ 
-                background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)', 
-                height: '145vh',
-                margin: 0 
-            }}>
-        <div >
-            <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[90%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
-                
-                <form onSubmit={handleSubmit}>
-                    <div className='absolute top-[6%] left-[42%] font-mona-sans text-2xl font-medium text-center text-gray-950'>Add Crops</div>
-                    <div className='absolute top-[13%] left-[5%] underline w-11/12 h-0.5 bg-gray-950'></div>
-                    <div className="absolute top-[18%] left-[25%] text-customWhite font-medium">
-                        Crop Name :
-                        <input 
-                            type='text' 
-                            value={selectedCrop} 
-                            onChange={(e) => setSelectedCrop(e.target.value)}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <div className="absolute top-[26%] left-[25%] text-customWhite font-medium">
-                        State :
-                        <input 
-                            type='text' 
-                            value={selectedState} 
-                            onChange={(e) => setSelectedState(e.target.value)}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <div className="absolute top-[34%] left-[25%] text-customWhite font-medium">
-                        District :
-                        <input 
-                            type='text' 
-                            value={selectedDistrict} 
-                            onChange={(e) => setSelectedDistrict(e.target.value)}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <div className="absolute top-[42%] left-[25%] text-customWhite font-medium">
-                        Seeds Cost :
-                        <input 
-                            type='number' 
-                            value={seedsCost || ''} 
-                            onChange={(e) => setSeedsCost(parseFloat(e.target.value))}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <div className="absolute top-[50%] left-[25%] text-customWhite font-medium">
-                        Irrigation Cost :
-                        <input 
-                            type='number' 
-                            value={irrigationCost || ''} 
-                            onChange={(e) => setIrrigationCost(parseFloat(e.target.value))}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <div className="absolute top-[58%] left-[25%] text-customWhite font-medium">
-                        Fertilizer Cost :
-                        <input 
-                            type='number' 
-                            value={fertilizerCost || ''} 
-                            onChange={(e) => setFertilizerCost(parseFloat(e.target.value))}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <div className="absolute top-[66%] left-[25%] text-customWhite font-medium">
-                        Labour Cost :
-                        <input 
-                            type='number' 
-                            value={labourCost || ''} 
-                            onChange={(e) => setLabourCost(parseFloat(e.target.value))}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <div className="absolute top-[74%] left-[25%] text-customWhite font-medium">
-                        MSP :
-                        <input 
-                            type='number' 
-                            value={msp || ''} 
-                            onChange={(e) => setMsp(parseFloat(e.target.value))}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <div className="absolute top-[82%] left-[25%] text-customWhite font-medium">
-                        Market Price :
-                        <input 
-                            type='number' 
-                            value={marketPrice || ''} 
-                            onChange={(e) => setMarketPrice(parseFloat(e.target.value))}
-                            className='absolute left-32 text-black rounded-lg w-44 h-7 px-3 border border-black shadow-gray-600'
-                        />
-                    </div>
-                    <button 
-                        type="submit" 
-                        className="absolute top-[92%] left-[40%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
-                    >
-                        Submit
-                    </button>
-                </form>
-            </div>
-            </div>
-            </div>
-        </>
+    toast.promise(
+      axios.post("https://ams-yivz.onrender.com/crop", {
+        crop: selectedCrop,
+        state: selectedState,
+        district: selectedDistrict,
+        msp,
+        marketPrice,
+        seedsCost,
+        irrigationCost,
+        fertilizerCost,
+        labourCost,
+      }),
+      {
+        loading: "Submitting crop data...",
+        success: "Crop data submitted successfully!",
+        error: "Error submitting the form",
+      }
     );
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#012E40] via-[#2B5876] to-[#C637A0] px-4 py-28">
+      <div className="w-full max-w-2xl bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-xl p-8">
+        {/* Title */}
+        <h1 className="text-2xl sm:text-3xl font-bold text-white text-center mb-6">
+          Add Crop Data
+        </h1>
+        <div className="h-0.5 w-16 bg-yellow-400 mx-auto mb-8"></div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Crop Name */}
+          <div>
+            <label className="block text-white mb-2">Crop Name</label>
+            <input
+              type="text"
+              value={selectedCrop}
+              onChange={(e) => setSelectedCrop(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* State */}
+          <div>
+            <label className="block text-white mb-2">State</label>
+            <input
+              type="text"
+              value={selectedState}
+              onChange={(e) => setSelectedState(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* District */}
+          <div>
+            <label className="block text-white mb-2">District</label>
+            <input
+              type="text"
+              value={selectedDistrict}
+              onChange={(e) => setSelectedDistrict(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Seeds Cost */}
+          <div>
+            <label className="block text-white mb-2">Seeds Cost</label>
+            <input
+              type="number"
+              value={seedsCost || ""}
+              onChange={(e) => setSeedsCost(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Irrigation Cost */}
+          <div>
+            <label className="block text-white mb-2">Irrigation Cost</label>
+            <input
+              type="number"
+              value={irrigationCost || ""}
+              onChange={(e) => setIrrigationCost(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Fertilizer Cost */}
+          <div>
+            <label className="block text-white mb-2">Fertilizer Cost</label>
+            <input
+              type="number"
+              value={fertilizerCost || ""}
+              onChange={(e) => setFertilizerCost(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Labour Cost */}
+          <div>
+            <label className="block text-white mb-2">Labour Cost</label>
+            <input
+              type="number"
+              value={labourCost || ""}
+              onChange={(e) => setLabourCost(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* MSP */}
+          <div>
+            <label className="block text-white mb-2">MSP</label>
+            <input
+              type="number"
+              value={msp || ""}
+              onChange={(e) => setMsp(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Market Price */}
+          <div>
+            <label className="block text-white mb-2">Market Price</label>
+            <input
+              type="number"
+              value={marketPrice || ""}
+              onChange={(e) => setMarketPrice(parseFloat(e.target.value))}
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 bg-white/90 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Submit */}
+          <button
+            type="submit"
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-lg transition duration-300"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default CostTrackingAdm;

@@ -2,48 +2,41 @@ import { Link } from "react-router-dom";
 
 function AdmServices() {
   return (
-    <>
-      <div
-        style={{
-          background: 'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)',
-          height: '101vh',
-          margin: 0
-      }}
-      >
-        <button>
-          <Link to="../admServices/costTrackingAdm"> {/* Correct route here */}
-            <div className="absolute top-[35%] left-[27%] box-border h-[30%] w-[20%] shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[-10px_-10px_30px_4px_rgba(119,154,164,1.000),_30px_1px_30px_4px_rgba(45,78,255,0.15)] rounded-md transition duration-500 ease-in-out  backdrop-blur-3xl backdrop-brightness-150">
-              <div className="absolute top-[42%] left-[28%] font-mona-sans text-xl text-customWhite">
+    <div
+      className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#012E40] via-[#2B5876] to-[#C637A0] px-4 py-10"
+    >
+      <div className="grid gap-8 sm:grid-cols-2 max-w-5xl w-full">
+        {/* Add Crop Data */}
+        <Link to="../admServices/costTrackingAdm">
+          <div className="group relative h-56 sm:h-64 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg 
+                          hover:shadow-2xl hover:scale-105 transition-all duration-500 flex items-center justify-center text-center">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-semibold text-white mb-2 group-hover:text-yellow-300 transition">
                 Add Crop Data
-              </div>
+              </h2>
+              <p className="text-gray-200 text-sm sm:text-base">
+                Insert new crop details with ease and accuracy.
+              </p>
             </div>
-          </Link>
-        </button>
+          </div>
+        </Link>
 
-        <button>
-          <Link to="../admServices/admUpdateCropData"> {/* Correct route here */}
-            <div className="absolute top-[35%] left-[53%] box-border h-[30%] w-[20%] shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[-10px_-10px_30px_4px_rgba(119,154,164,1.000),_30px_1px_30px_4px_rgba(45,78,255,0.15)] rounded-md transition duration-500 ease-in-out  backdrop-blur-3xl backdrop-brightness-150">
-              <div className="absolute top-[33%] left-[28%] font-mona-sans text-xl text-customWhite">
-                Update / Delete
-              </div>
-                <div className="absolute top-[49%] left-[35%] font-mona-sans text-xl text-customWhite">Crop Data</div>
+        {/* Update / Delete Crop Data */}
+        <Link to="../admServices/admUpdateCropData">
+          <div className="group relative h-56 sm:h-64 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg 
+                          hover:shadow-2xl hover:scale-105 transition-all duration-500 flex items-center justify-center text-center">
+            <div>
+              <h2 className="text-xl sm:text-2xl font-semibold text-white mb-2 group-hover:text-green-300 transition">
+                Update / Delete Crop Data
+              </h2>
+              <p className="text-gray-200 text-sm sm:text-base">
+                Manage and keep crop data accurate & up-to-date.
+              </p>
             </div>
-          </Link>
-        </button>
-{/* 
-        <button>
-          <Link to="../admServices"> {/* Correct route here 
-            <div className="absolute top-[35%] left-[65%] box-border h-[30%] w-[20%] shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[-10px_-10px_30px_4px_rgba(119,154,164,1.000),_30px_1px_30px_4px_rgba(45,78,255,0.15)] rounded-md transition duration-500 ease-in-out  backdrop-blur-3xl backdrop-brightness-150">
-              <div className="absolute top-[42%] left-[25%] font-mona-sans text-xl text-customWhite">
-              Delete Crop Data
-              </div>
-            </div>
-          </Link>
-        </button> 
-  */}
-
+          </div>
+        </Link>
       </div>
-    </>
+    </div>
   );
 }
 

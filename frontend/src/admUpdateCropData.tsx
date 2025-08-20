@@ -1,370 +1,404 @@
-import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from 'react';
-import axios from 'axios';
-import { toast } from 'sonner';
-import { type Crop } from '../components/types';
+import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { type Crop } from "../components/types";
 
 const AdmUpdateCropData: React.FC = () => {
-    const [selectedState, setSelectedState] = useState<string>('');
-    const [selectedDistrict, setSelectedDistrict] = useState<string>('');
-    const [selectedCrop, setSelectedCrop] = useState<string>('');
-    const [districts, setDistricts] = useState<string[]>([]);
-    const [data, setData] = useState<Crop[]>([]);
-    const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-    const [editingCrop, setEditingCrop] = useState<Crop | null>(null); // Track crop being edited
-    const tableRef = useRef<HTMLDivElement>(null);
-    const [cropNames, setCropNames] = useState<string[]>([]);
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedCrop, setSelectedCrop] = useState("");
+  const [districts, setDistricts] = useState<string[]>([]);
+  const [data, setData] = useState<Crop[]>([]);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [editingCrop, setEditingCrop] = useState<Crop | null>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
+  const [cropNames, setCropNames] = useState<string[]>([]);
 
-    useEffect(() => {
-        const fetchCropData = async () => {
-            try {
-                const response = await axios.get('https://ams-yivz.onrender.com/crop/names');
-                if (response.status !== 200) {
-                    throw new Error('Failed to fetch crop data');
-                }
-                console.log(response.data);
-                
-                setCropNames(response.data.crops);
-            } catch (error) {
-                console.error('Error fetching crop data:', error);
-            }
-        };
-        fetchCropData();
-    }, [])
+  const districtsByState: Record<string, string[]> = {
+    Tamilnadu: ["Chennai", "Coimbatore", "Madurai"],
+    "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur"],
+    Kerala: ["Kochi", "Thiruvananthapuram", "Kozhikode"],
+    Telangana: ["Hyderabad", "Warangal", "Nizamabad"],
+    Maharastra: ["Mumbai", "Pune", "Nagpur"],
+  };
 
-    const districtsByState: Record<string, string[]> = {
-        Tamilnadu: ['Chennai', 'Coimbatore', 'Madurai'],
-        'Andhra Pradesh': ['Visakhapatnam', 'Vijayawada', 'Guntur'],
-        Kerala: ['Kochi', 'Thiruvananthapuram', 'Kozhikode'],
-        Telangana: ['Hyderabad', 'Warangal', 'Nizamabad'],
-        Maharastra: ['Mumbai', 'Pune', 'Nagpur'],
+  useEffect(() => {
+    const fetchCropData = async () => {
+      try {
+        const response = await axios.get("https://ams-yivz.onrender.com/crop/names");
+        if (response.status !== 200) throw new Error("Failed to fetch crop data");
+        setCropNames(response.data.crops);
+      } catch (error) {
+        console.error("Error fetching crop data:", error);
+      }
     };
+    fetchCropData();
+  }, []);
 
-    const handleStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        const state = event.target.value;
-        setSelectedState(state);
-        setDistricts(state ? districtsByState[state] : []);
-        setSelectedDistrict('');
-    };
+  const handleStateChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const state = e.target.value;
+    setSelectedState(state);
+    setDistricts(state ? districtsByState[state] : []);
+    setSelectedDistrict("");
+  };
 
-    const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedDistrict(event.target.value);
-    };
+  const handleDistrictChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDistrict(e.target.value);
+  };
 
-    const handleCropChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        setSelectedCrop(event.target.value);
-    };
+  const handleCropChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCrop(e.target.value);
+  };
 
-    const isDataPresent = (newCropData: Crop) => {
-        return data.some(
-            (item) =>
-                item.crop === newCropData.crop &&
-                item.state === newCropData.state &&
-                item.district === newCropData.district
-        );
-    };
-
-    const handleSubmit = async (
-        e: FormEvent<HTMLFormElement>,
-        isSubmit: boolean
-    ) => {
-        e.preventDefault();
-
-        if (!selectedState || !selectedDistrict || !selectedCrop) {
-            toast.error('Please select a crop, state, and district.');
-            return;
-        }
-
-        if (isSubmit) {
-            setLoadingSubmit(true);
-        }
-
-        try {
-            const response = await axios.get(
-                `https://ams-yivz.onrender.com/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
-            );
-
-            if (response.status === 200) {
-                const newCropData: Crop = {
-                    ...response.data.cost,
-                    ...response.data.crop,
-                };
-
-                if (isDataPresent(newCropData)) {
-                    toast.error('Data is already present in the table');
-                    setTimeout(() => {
-                        tableRef.current?.scrollIntoView({
-                            behavior: 'smooth',
-                        });
-                    }, 500);
-                } else {
-                    setData((prevData) => [...prevData, newCropData]);
-                    toast.success('Data fetched successfully');
-                    setTimeout(() => {
-                        tableRef.current?.scrollIntoView({
-                            behavior: 'smooth',
-                        });
-                    }, 500);
-                }
-            } else {
-                toast.error('No Crop Data Found');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        } finally {
-            setLoadingSubmit(false);
-        }
-    };
-
-    const handleEditClick = (crop: Crop) => {
-        setEditingCrop(crop); // Set the crop being edited
-    };
-
-    const handleUpdateSubmit = async (updatedCrop: Crop) => {
-        try {
-            const response = await axios.put('https://ams-yivz.onrender.com/crop/update', {
-                id: updatedCrop.id,
-                crop: updatedCrop.crop, 
-                state: updatedCrop.state,
-                district: updatedCrop.district,
-                msp: updatedCrop.msp,
-                marketPrice: updatedCrop.marketPrice,
-                seedsCost: updatedCrop.seedsCost,
-                irrigationCost: updatedCrop.irrigationCost,
-                fertilizerCost: updatedCrop.fertilizerCost,
-                labourCost: updatedCrop.labourCost,
-            });
-    
-            if (response.status === 200) {
-                setData((prevData) =>
-                    prevData.map((item) =>
-                        item.id === updatedCrop.id ? updatedCrop : item
-                    )
-                );
-                toast.success('Crop data updated successfully');
-                setEditingCrop(null); // Reset editing state
-            } else {
-                toast.error('Failed to update crop data');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            toast.error('An error occurred while updating crop data');
-        }
-    };
-
-    const handleDelete = async (id: number) => {
-        try {
-            await axios.delete(`https://ams-yivz.onrender.com/crop/${id}`);
-            setData((prevData) => prevData.filter((item) => item.id !== id));
-            toast.success('Crop data deleted successfully');
-        } catch (error) {
-            console.error('Error:', error);
-            toast.error('An error occurred while deleting crop data');
-        }
-    }
-    
-
-    return (
-        <>
-            {/* Background and Form */}
-            <div
-                style={{
-                    background:
-                        'linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)',
-                    height: '160vh',
-                    margin: 0,
-                }}
-            >
-                <div className="bg-customGradient h-screen w-full brightness-105">
-                    <div className="absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite">
-                        Update Crop Data
-                    </div>
-                    <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[50%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
-                        <form onSubmit={(e) => handleSubmit(e, true)}>
-                            {/* Crop Selection */}
-                            <div className="absolute top-[20%] left-[25%] text-customWhite font-medium">
-                                Crop Name :
-                                <select
-                                    className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600"
-                                    value={selectedCrop}
-                                    onChange={handleCropChange}
-                                >
-                                    <option value="">Select Crop</option>
-                                    { 
-                                        cropNames.length > 0 && cropNames.map((cropname) => (
-                                            <option key={cropname} value={cropname}>{cropname}</option>
-                                        ) )
-                                    }
-                                    
-                                </select>
-                            </div>
-
-                            {/* State Selection */}
-                            <div className="absolute top-[40%] left-[25%] text-customWhite font-medium">
-                                State :
-                                <select
-                                    className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600"
-                                    value={selectedState}
-                                    onChange={handleStateChange}
-                                >
-                                    <option value="">Select State</option>
-                                    <option value="Tamilnadu">Tamilnadu</option>
-                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                    <option value="Kerala">Kerala</option>
-                                    <option value="Telangana">Telangana</option>
-                                    <option value="Maharastra">Maharastra</option>
-                                </select>
-                            </div>
-
-                            {/* District Selection */}
-                            <div className="absolute top-[60%] left-[25%] text-customWhite font-medium">
-                                District :
-                                <select
-                                    className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600"
-                                    value={selectedDistrict}
-                                    onChange={handleDistrictChange}
-                                >
-                                    <option value="">Select District</option>
-                                    {districts.map((district, index) => (
-                                        <option key={index} value={district}>
-                                            {district}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {/* Submit Button */}
-                            <button
-                                type="submit"
-                                disabled={loadingSubmit}
-                                className="absolute top-[80%] left-[41%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
-                            >
-                                {loadingSubmit ? 'Loading...' : 'Submit'}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
-                {/* Data Table */}
-                {data.length > 0 && (
-                    <div ref={tableRef}>
-                        <ShowResults data={data} onEdit={handleEditClick} onDelete={handleDelete} />
-                    </div>
-                )}
-
-                {/* Update Form */}
-                {editingCrop && (
-                    <UpdateForm crop={editingCrop} onSubmit={handleUpdateSubmit} />
-                )}
-            </div>
-        </>
+  const isDataPresent = (newCropData: Crop) =>
+    data.some(
+      (item) =>
+        item.crop === newCropData.crop &&
+        item.state === newCropData.state &&
+        item.district === newCropData.district
     );
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>, isSubmit: boolean) => {
+    e.preventDefault();
+
+    if (!selectedState || !selectedDistrict || !selectedCrop) {
+      toast.error("Please select a crop, state, and district.");
+      return;
+    }
+
+    if (isSubmit) setLoadingSubmit(true);
+
+    try {
+      const response = await axios.get(
+        `https://ams-yivz.onrender.com/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
+      );
+
+      if (response.status === 200) {
+        const newCropData: Crop = {
+          ...response.data.cost,
+          ...response.data.crop,
+        };
+
+        if (isDataPresent(newCropData)) {
+          toast.error("Data is already present in the table");
+          setTimeout(() => tableRef.current?.scrollIntoView({ behavior: "smooth" }), 500);
+        } else {
+          setData((prev) => [...prev, newCropData]);
+          toast.success("Data fetched successfully");
+          setTimeout(() => tableRef.current?.scrollIntoView({ behavior: "smooth" }), 500);
+        }
+      } else {
+        toast.error("No Crop Data Found");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while fetching crop data");
+    } finally {
+      setLoadingSubmit(false);
+    }
+  };
+
+  const handleEditClick = (crop: Crop) => {
+    setEditingCrop(crop);
+  };
+
+  const handleUpdateSubmit = async (updatedCrop: Crop) => {
+    try {
+      const response = await axios.put("https://ams-yivz.onrender.com/crop/update", {
+        id: updatedCrop.id,
+        crop: updatedCrop.crop,
+        state: updatedCrop.state,
+        district: updatedCrop.district,
+        msp: updatedCrop.msp,
+        marketPrice: updatedCrop.marketPrice,
+        seedsCost: updatedCrop.seedsCost,
+        irrigationCost: updatedCrop.irrigationCost,
+        fertilizerCost: updatedCrop.fertilizerCost,
+        labourCost: updatedCrop.labourCost,
+      });
+
+      if (response.status === 200) {
+        setData((prev) => prev.map((item) => (item.id === updatedCrop.id ? updatedCrop : item)));
+        toast.success("Crop data updated successfully");
+        setEditingCrop(null);
+      } else {
+        toast.error("Failed to update crop data");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while updating crop data");
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`https://ams-yivz.onrender.com/crop/${id}`);
+      setData((prev) => prev.filter((item) => item.id !== id));
+      toast.success("Crop data deleted successfully");
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred while deleting crop data");
+    }
+  };
+
+  return (
+    <div
+      className="min-h-screen bg-gradient-to-br from-[#012E40] via-[#c637a4] to-[#c637a477] px-6 py-24 flex flex-col items-center"
+    >
+      <h1 className="text-white text-3xl font-bold mb-12">Update Crop Data</h1>
+
+      <div className="w-full max-w-4xl bg-white/10 backdrop-blur-xl backdrop-brightness-125 rounded-xl p-8 shadow-lg border border-white/20 mb-12">
+        <form className="space-y-6" onSubmit={(e) => handleSubmit(e, true)}>
+          <div>
+            <label className="block mb-2 font-medium text-white">Crop Name</label>
+            <select
+              value={selectedCrop}
+              onChange={handleCropChange}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">Select Crop</option>
+              {cropNames.map((crop) => (
+                <option key={crop} value={crop}>
+                  {crop}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-2 font-medium text-white">State</label>
+            <select
+              value={selectedState}
+              onChange={handleStateChange}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">Select State</option>
+              {Object.keys(districtsByState).map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-2 font-medium text-white">District</label>
+            <select
+              value={selectedDistrict}
+              onChange={handleDistrictChange}
+              disabled={!districts.length}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">Select District</option>
+              {districts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loadingSubmit}
+            className={`w-full py-2 rounded-lg text-white font-semibold ${
+              loadingSubmit ? "bg-gray-500" : "bg-indigo-600 hover:bg-indigo-700"
+            } transition`}
+          >
+            {loadingSubmit ? "Loading..." : "Fetch Data"}
+          </button>
+        </form>
+      </div>
+
+      {data.length > 0 && (
+        <div ref={tableRef} className="w-full max-w-6xl overflow-x-auto">
+          <ShowResults data={data} onEdit={handleEditClick} onDelete={handleDelete} />
+        </div>
+      )}
+
+      {editingCrop && (
+        <UpdateForm crop={editingCrop} onSubmit={handleUpdateSubmit} onCancel={() => setEditingCrop(null)} />
+      )}
+    </div>
+  );
 };
 
 function ShowResults({
-    data,
-    onEdit,
-    onDelete,
+  data,
+  onEdit,
+  onDelete,
 }: {
-    data: Crop[];
-    onEdit: (crop: Crop) => void;
-    onDelete: (id: number) => void;
+  data: Crop[];
+  onEdit: (crop: Crop) => void;
+  onDelete: (id: number) => void;
 }) {
-    return (
-        <div className="p-8 flex justify-center items-center">
-            <div className="">
-                <table className="min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium">
-                    <thead>
-                        <tr>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Crop</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">State</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">District</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Seeds Cost (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Irrigation Cost (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Fertilizer Cost (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Labour Cost (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">MSP (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Market Price (Rs)</th>
-                            <th className="border border-customWhite px-10 py-2 text-center bg-gray-900">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {data.map((item, index) => (
-                            <tr key={index} className="bg-white text-black">
-                                <td className="border border-customWhite px-10 py-4 text-center">{item.crop}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">{item.state}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">{item.district}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">{item.seedsCost}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">{item.irrigationCost}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">{item.fertilizerCost}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">{item.labourCost}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">{item.msp}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">{item.marketPrice}</td>
-                                <td className="border border-customWhite px-10 py-2 text-center">
-                                    <div className='flex gap-2'>
-                                    <button
-                                        onClick={() => onEdit(item)}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded"
-                                    >
-                                        Update
-                                    </button>
-
-                                    <button
-                                        onClick={() => onDelete(item.id)}
-                                        className="bg-red-500 text-white px-4 py-2 rounded"
-                                        >
-                                        Delete
-                                    </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+  return (
+    <table className="min-w-full border-collapse rounded-lg shadow-lg bg-white font-medium text-center">
+      <thead>
+        <tr className="bg-gray-900 text-white text-sm">
+          <th className="border border-gray-700 px-6 py-3">Crop</th>
+          <th className="border border-gray-700 px-6 py-3">State</th>
+          <th className="border border-gray-700 px-6 py-3">District</th>
+          <th className="border border-gray-700 px-6 py-3">Seeds Cost (Rs)</th>
+          <th className="border border-gray-700 px-6 py-3">Irrigation Cost (Rs)</th>
+          <th className="border border-gray-700 px-6 py-3">Fertilizer Cost (Rs)</th>
+          <th className="border border-gray-700 px-6 py-3">Labour Cost (Rs)</th>
+          <th className="border border-gray-700 px-6 py-3">MSP (Rs)</th>
+          <th className="border border-gray-700 px-6 py-3">Market Price (Rs)</th>
+          <th className="border border-gray-700 px-6 py-3">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((item) => (
+          <tr key={item.id} className="odd:bg-gray-100 even:bg-gray-50">
+            <td className="border border-gray-300 px-6 py-3">{item.crop}</td>
+            <td className="border border-gray-300 px-6 py-3">{item.state}</td>
+            <td className="border border-gray-300 px-6 py-3">{item.district}</td>
+            <td className="border border-gray-300 px-6 py-3">{item.seedsCost}</td>
+            <td className="border border-gray-300 px-6 py-3">{item.irrigationCost}</td>
+            <td className="border border-gray-300 px-6 py-3">{item.fertilizerCost}</td>
+            <td className="border border-gray-300 px-6 py-3">{item.labourCost}</td>
+            <td className="border border-gray-300 px-6 py-3">{item.msp}</td>
+            <td className="border border-gray-300 px-6 py-3">{item.marketPrice}</td>
+            <td className="border border-gray-300 px-6 py-3">
+              <div className="flex justify-center gap-3">
+                <button
+                  onClick={() => onEdit(item)}
+                  className="bg-blue-600 hover:bg-blue-700 rounded px-3 py-1 text-white transition"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={() => onDelete(item.id)}
+                  className="bg-red-600 hover:bg-red-700 rounded px-3 py-1 text-white transition"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 }
 
 function UpdateForm({
-    crop,
-    onSubmit,
+  crop,
+  onSubmit,
+  onCancel,
 }: {
-    crop: Crop;
-    onSubmit: (updatedCrop: Crop) => void;
+  crop: Crop;
+  onSubmit: (updatedCrop: Crop) => void;
+  onCancel: () => void;
 }) {
-    const [formData, setFormData] = useState<Crop>(crop);
+  const [formData, setFormData] = useState<Crop>(crop);
 
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: Number(value) });
+  };
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: parseFloat(value) });
-    };
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        onSubmit(formData);
-    };
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 space-y-6 relative"
+      >
+        <h2 className="text-2xl font-bold mb-4">Update Crop Data</h2>
 
-    return (
-        <form onSubmit={handleSubmit} className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-[98%] h-[28%]">
-                <h2 className="text-2xl font-bold mb-4">Update Crop Data</h2>
-                <label className='absolute top-[49%] left-[4%]'>Seeds Cost</label>
-                <input className='absolute top-[48.5%] left-[10%] w-20 bg-gray-300 text-center py-1' name="seedsCost" value={formData.seedsCost} onChange={handleChange} />
-                <label className='absolute top-[49%] left-[19%]'>Irrigation Cost</label>
-                <input className='absolute top-[48.5%] left-[27%] w-20 bg-gray-300 text-center py-1' name="irrigationCost" value={formData.irrigationCost} onChange={handleChange} />
-                <label className='absolute top-[49%] left-[37%]'>Fertilizer Cost</label>
-                <input className='absolute top-[48.5%] left-[45%] w-20 bg-gray-300 text-center py-1' name="fertilizerCost" value={formData.fertilizerCost} type="number" onChange={handleChange} />
-                <label className='absolute top-[49%] left-[52%]'>Labour Cost</label>
-                <input className='absolute top-[48.5%] left-[59%] w-20 bg-gray-300 text-center py-1' name="labourCost" value={formData.labourCost} onChange={handleChange} />
-                <label className='absolute top-[49%] left-[69%]'>MSP</label>
-                <input className='absolute top-[48.5%] left-[72%] w-20 bg-gray-300 text-center py-1' name="msp" value={formData.msp} onChange={handleChange} />
-                <label className='absolute top-[49%] left-[80%]'>Market Price</label>
-                <input className='absolute top-[48.5%] left-[88%] w-20 bg-gray-300 text-center py-1' name="marketPrice" value={formData.marketPrice} onChange={handleChange} />
-                <button type="submit" className="absolute top-[55%] left-[47%] bg-blue-500 text-white px-4 py-2 rounded mt-4">Submit</button>
-            </div>
-        </form>
-    );
+        <div className="grid grid-cols-2 gap-6">
+          <div>
+            <label className="block mb-1 font-semibold">Seeds Cost</label>
+            <input
+              type="number"
+              name="seedsCost"
+              value={formData.seedsCost}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Irrigation Cost</label>
+            <input
+              type="number"
+              name="irrigationCost"
+              value={formData.irrigationCost}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Fertilizer Cost</label>
+            <input
+              type="number"
+              name="fertilizerCost"
+              value={formData.fertilizerCost}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Labour Cost</label>
+            <input
+              type="number"
+              name="labourCost"
+              value={formData.labourCost}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">MSP</label>
+            <input
+              type="number"
+              name="msp"
+              value={formData.msp}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold">Market Price</label>
+            <input
+              type="number"
+              name="marketPrice"
+              value={formData.marketPrice}
+              onChange={handleChange}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-4 mt-6">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-6 py-2 rounded bg-gray-300 hover:bg-gray-400 transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-6 py-2 rounded bg-indigo-600 hover:bg-indigo-700 text-white transition"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default AdmUpdateCropData;

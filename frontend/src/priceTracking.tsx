@@ -1,22 +1,16 @@
-import React, {
-  useState,
-  ChangeEvent,
-  FormEvent,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { type Crop } from "../components/types";
 
 const PriceTracking: React.FC = () => {
-  const [selectedState, setSelectedState] = useState<string>("");
-  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
-  const [selectedCrop, setSelectedCrop] = useState<string>("");
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedCrop, setSelectedCrop] = useState("");
   const [districts, setDistricts] = useState<string[]>([]);
   const [data, setData] = useState<Crop[]>([]);
-  const [loadingSubmit, setLoadingSubmit] = useState<boolean>(false);
-  const [loadingCompare, setLoadingCompare] = useState<boolean>(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [loadingCompare, setLoadingCompare] = useState(false);
   const tableRef = useRef<HTMLDivElement>(null);
   const [cropNames, setCropNames] = useState<string[]>([]);
 
@@ -31,14 +25,8 @@ const PriceTracking: React.FC = () => {
   useEffect(() => {
     const fetchCropData = async () => {
       try {
-        const response = await axios.get(
-          "https://ams-yivz.onrender.com/crop/names"
-        );
-        if (response.status !== 200) {
-          throw new Error("Failed to fetch crop data");
-        }
-        console.log(response.data);
-
+        const response = await axios.get("https://ams-yivz.onrender.com/crop/names");
+        if (response.status !== 200) throw new Error("Failed to fetch crop data");
         setCropNames(response.data.crops);
       } catch (error) {
         console.error("Error fetching crop data:", error);
@@ -47,47 +35,39 @@ const PriceTracking: React.FC = () => {
     fetchCropData();
   }, []);
 
-  const handleStateChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    const state = event.target.value;
+  const handleStateChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const state = e.target.value;
     setSelectedState(state);
     setDistricts(state ? districtsByState[state] : []);
     setSelectedDistrict("");
   };
 
-  const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedDistrict(event.target.value);
+  const handleDistrictChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedDistrict(e.target.value);
   };
 
-  const handleCropChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCrop(event.target.value);
+  const handleCropChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCrop(e.target.value);
   };
 
-  const isDataPresent = (newCropData: Crop) => {
-    return data.some(
+  const isDataPresent = (newCropData: Crop) =>
+    data.some(
       (item) =>
         item.crop === newCropData.crop &&
         item.state === newCropData.state &&
         item.district === newCropData.district
     );
-  };
 
-  const handleSubmit = async (
-    e: FormEvent<HTMLFormElement>,
-    isSubmit: boolean
-  ) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>, isSubmit: boolean) => {
     e.preventDefault();
 
-    // Form validation
     if (!selectedState || !selectedDistrict || !selectedCrop) {
       toast.error("Please select a crop, state, and district.");
       return;
     }
 
-    if (isSubmit) {
-      setLoadingSubmit(true);
-    } else {
-      setLoadingCompare(true);
-    }
+    if (isSubmit) setLoadingSubmit(true);
+    else setLoadingCompare(true);
 
     try {
       const response = await axios.get(
@@ -102,20 +82,14 @@ const PriceTracking: React.FC = () => {
 
         if (isDataPresent(newCropData)) {
           toast.error("Data is already present in the table");
-          setTimeout(() => {
-            tableRef.current?.scrollIntoView({
-              behavior: "smooth",
-            });
-          }, 500);
         } else {
-          setData((prevData) => [...prevData, newCropData]);
+          setData((prev) => [...prev, newCropData]);
           toast.success("Data fetched successfully");
-          setTimeout(() => {
-            tableRef.current?.scrollIntoView({
-              behavior: "smooth",
-            });
-          }, 500);
         }
+
+        setTimeout(() => {
+          tableRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 500);
       } else {
         toast.error("No Crop Data Found");
       }
@@ -128,108 +102,100 @@ const PriceTracking: React.FC = () => {
   };
 
   return (
-    <>
-      <div
-        style={{
-          background:
-            "linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)",
-          height: "190vh",
-          margin: 0,
-        }}
-      >
-        <div className="bg-customGradient h-screen w-full brightness-105">
-          <div className="absolute top-[20%] left-[45%] font-medium text-2xl text-customWhite">
-            Price Tracking
+    <div
+      className="min-h-screen w-full flex flex-col items-center px-6 py-28"
+      style={{
+        background:
+          "linear-gradient(126.3deg, rgba(1, 46, 64, 1) 32.2%, rgba(198, 55, 160, 0.46) 109.2%)",
+      }}
+    >
+      <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-10 text-center">
+        Price Tracking
+      </h1>
+
+      {/* Form Card */}
+      <div className="w-full max-w-3xl bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-white/20">
+        <form onSubmit={(e) => handleSubmit(e, true)} className="space-y-6">
+          <div>
+            <label className="block text-white font-semibold mb-2">Crop Name</label>
+            <select
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none text-black"
+              value={selectedCrop}
+              onChange={handleCropChange}
+            >
+              <option value="">Select Crop</option>
+              {cropNames.map((crop) => (
+                <option key={crop} value={crop}>
+                  {crop}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="absolute top-[30%] left-[30%] box-border w-[40%] h-[50%] border border-customWhite rounded-xl hover:shadow-[0_1.2px_2.2px_rgba(255,_255,_255,_0.034),_0_2px_5.3px_rgba(255,_255,_255,_0.048),_0_2px_2px_rgba(255,_255,_255,_0.06),_0_2px_2px_rgba(255,_255,_255,_0.072),_0_2px_2px_rgba(255,_255,_255,_0.086),_0_100px_80px_rgba(255,_255,_255,_0.12)] bg-customWhite/30 backdrop-blur-lg backdrop-brightness-125">
-            <form onSubmit={(e) => handleSubmit(e, true)}>
-              {/* Crop Selection */}
-              <div className="absolute top-[20%] left-[25%] text-customWhite font-medium">
-                Crop Name :
-                <select
-                  className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600"
-                  value={selectedCrop}
-                  onChange={handleCropChange}
-                >
-                  <option value="">Select Crop</option>
-                  {cropNames.length > 0 &&
-                    cropNames.map((cropname) => (
-                      <option key={cropname} value={cropname}>
-                        {cropname}
-                      </option>
-                    ))}
-                </select>
-              </div>
 
-              {/* State Selection */}
-              <div className="absolute top-[40%] left-[25%] text-customWhite font-medium">
-                State :
-                <select
-                  className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600"
-                  value={selectedState}
-                  onChange={handleStateChange}
-                >
-                  <option value="">Select State</option>
-                  <option value="Tamilnadu">Tamilnadu</option>
-                  <option value="Andhra Pradesh">Andhra Pradesh</option>
-                  <option value="Kerala">Kerala</option>
-                  <option value="Telangana">Telangana</option>
-                  <option value="Maharastra">Maharastra</option>
-                </select>
-              </div>
-
-              {/* District Selection */}
-              <div className="absolute top-[60%] left-[25%] text-customWhite font-medium">
-                District :
-                <select
-                  className="absolute left-32 text-black rounded-lg w-44 h-7 px-3 cursor-pointer border border-black shadow-gray-600"
-                  value={selectedDistrict}
-                  onChange={handleDistrictChange}
-                >
-                  <option value="">Select District</option>
-                  {districts.map((district, index) => (
-                    <option key={index} value={district}>
-                      {district}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loadingSubmit}
-                className="absolute top-[80%] left-[30%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
-              >
-                {loadingSubmit ? "Loading..." : "Submit"}
-              </button>
-
-              {/* Compare Button */}
-              <button
-                type="button"
-                onClick={(e) =>
-                  handleSubmit(
-                    e as unknown as FormEvent<HTMLFormElement>,
-                    false
-                  )
-                }
-                disabled={loadingCompare}
-                className="absolute top-[80%] left-[50%] px-8 py-2 text-sm font-medium text-white hover:bg-customBlue bg-customLightLightBlue focus:ring-2 focus:outline-none focus:ring-gray-900 rounded-3xl border text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition duration-500"
-              >
-                {loadingCompare ? "Loading..." : "Compare"}
-              </button>
-            </form>
+          <div>
+            <label className="block text-white font-semibold mb-2">State</label>
+            <select
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none text-black"
+              value={selectedState}
+              onChange={handleStateChange}
+            >
+              <option value="">Select State</option>
+              {Object.keys(districtsByState).map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
 
-        {/* Table with Ref */}
-        {data.length > 0 && (
-          <div ref={tableRef}>
-            <ShowResults data={data} />
+          <div>
+            <label className="block text-white font-semibold mb-2">District</label>
+            <select
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none text-black"
+              value={selectedDistrict}
+              onChange={handleDistrictChange}
+              disabled={!districts.length}
+            >
+              <option value="">Select District</option>
+              {districts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
           </div>
-        )}
+
+          <div className="flex flex-col sm:flex-row sm:space-x-6 gap-4">
+            <button
+              type="submit"
+              disabled={loadingSubmit}
+              className="flex-1 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold shadow-md"
+            >
+              {loadingSubmit ? "Loading..." : "Submit"}
+            </button>
+
+            <button
+              type="button"
+              onClick={(e) => handleSubmit(e as any, false)}
+              disabled={loadingCompare}
+              className="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 transition text-white font-semibold shadow-md"
+            >
+              {loadingCompare ? "Loading..." : "Compare"}
+            </button>
+          </div>
+        </form>
       </div>
-    </>
+
+      {/* Results Table */}
+      {data.length > 0 && (
+        <div
+          className="w-full max-w-6xl mt-12 overflow-x-auto"
+          ref={tableRef}
+        >
+          <ShowResults data={data} />
+        </div>
+      )}
+    </div>
   );
 };
 
@@ -237,66 +203,43 @@ function ShowResults({ data }: { data: Crop[] }) {
   const calculateComparisonSummary = (data: Crop[]) => {
     if (data.length < 2) return null;
 
-    const highestMarketPrice = data.reduce(
-      (max, crop) => (crop.marketPrice > max.marketPrice ? crop : max),
-      data[0]
-    );
+    const highestMarketPrice = data.reduce((max, crop) =>
+      crop.marketPrice > max.marketPrice ? crop : max
+    , data[0]);
+
     return `The Crop with the Highest Market Price is ${highestMarketPrice.crop} from ${highestMarketPrice.district}, ${highestMarketPrice.state} with a Market price of Rs. ${highestMarketPrice.marketPrice}`;
   };
 
   return (
-    <div className="p-8">
-      <div className="absolute top-[100%] left-[15%]">
-        <table className="relative left-[-3%] top-8 min-w-full border-collapse border-1 shadow-[0_3px_20px_rgb(0,0,0,0.2)] border-customWhite rounded-xl text-customWhite font-medium">
-          <thead>
-            <tr>
-              <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">
-                Crop
-              </th>
-              <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">
-                State
-              </th>
-              <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">
-                District
-              </th>
-              <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">
-                MSP (Rs)
-              </th>
-              <th className="border border-customWhite px-20 py-2 text-center bg-gray-900">
-                Market Price (Rs)
-              </th>
+    <>
+      <table className="min-w-full text-center border-collapse rounded-lg shadow-lg bg-white font-medium">
+        <thead>
+          <tr className="bg-gray-900 text-white text-sm">
+            <th className="px-6 py-3 border">Crop</th>
+            <th className="px-6 py-3 border">State</th>
+            <th className="px-6 py-3 border">District</th>
+            <th className="px-6 py-3 border">MSP (Rs)</th>
+            <th className="px-6 py-3 border">Market Price (Rs)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((item, i) => (
+            <tr key={i} className={`odd:bg-gray-100 even:bg-gray-50`}>
+              <td className="border px-6 py-3">{item.crop}</td>
+              <td className="border px-6 py-3">{item.state}</td>
+              <td className="border px-6 py-3">{item.district}</td>
+              <td className="border px-6 py-3">{item.msp}</td>
+              <td className="border px-6 py-3">{item.marketPrice}</td>
             </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index} className="bg-white text-black">
-                <td className="border border-customWhite px-10 py-4 text-center">
-                  {item.crop}
-                </td>
-                <td className="border border-customWhite px-10 py-2 text-center">
-                  {item.state}
-                </td>
-                <td className="border border-customWhite px-10 py-2 text-center">
-                  {item.district}
-                </td>
-                <td className="border border-customWhite px-10 py-2 text-center">
-                  {item.msp}
-                </td>
-                <td className="border border-customWhite px-10 py-2 text-center">
-                  {item.marketPrice}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {data.length > 1 && (
-          <div className="mt-4 p-4 relative left-[-3%] top-12 bg-gray-800 text-white rounded-lg">
-            <strong>Comparison Summary:</strong>{" "}
-            {calculateComparisonSummary(data)}
-          </div>
-        )}
-      </div>
-    </div>
+          ))}
+        </tbody>
+      </table>
+      {data.length > 1 && (
+        <div className="mt-6 p-4 bg-gray-800 text-white rounded-lg shadow text-center">
+          <strong>Comparison Summary:</strong> {calculateComparisonSummary(data)}
+        </div>
+      )}
+    </>
   );
 }
 
