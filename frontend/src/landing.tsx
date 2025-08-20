@@ -101,7 +101,6 @@ function Landing() {
         </div>
       </section>
 
-      {/* Features Section */}
       <section
         id="scrollHere"
         className={`grid gap-6 grid-cols-1 px-6 pb-28 md:px-16 transition-all duration-1000 cursor-default ${
