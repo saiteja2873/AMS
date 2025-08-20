@@ -103,7 +103,7 @@ function Landing() {
 
       <section
         id="scrollHere"
-        className={`grid gap-6 grid-cols-1 px-6 pb-28 md:px-16 transition-all duration-1000 cursor-default ${
+        className={`grid gap-6 grid-cols-1 px-6 pt-10 pb-28 md:px-16 transition-all duration-1000 cursor-default ${
           pageLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
