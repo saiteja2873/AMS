@@ -36,7 +36,7 @@ function Landing() {
     >
       {/* Hero Section */}
       <section
-        className={`flex flex-col justify-center items-center text-center px-6 py-28 md:py-32 transition-all duration-1000 ${
+        className={`flex flex-col justify-center items-center text-center px-6 py-[50%] md:py-[18%] transition-all duration-1000 ${
           pageLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
         }`}
       >
@@ -104,7 +104,7 @@ function Landing() {
       {/* Features Section */}
       <section
         id="scrollHere"
-        className={`grid gap-6 md:grid-cols-3 px-6 py-16 md:px-16 transition-all duration-1000 ${
+        className={`grid gap-6 grid-cols-1 px-6 pb-28 md:px-16 transition-all duration-1000 cursor-default ${
           pageLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
       >
