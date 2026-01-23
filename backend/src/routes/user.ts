@@ -14,36 +14,64 @@ app.get("/user", (c) => {
 });
 
 app.post("/signUp", async (c) => {
-    const { email, password } = await c.req.json();
+  try {
+    const body = await c.req.json();
+    const { email, password } = body;
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-        return c.json({ message: "User already exists" }, 204);
+    if (!email || !password) {
+      return c.json({ message: "Email and password required" }, 400);
     }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return c.json({ message: "User already exists" }, 409);
+    }
+
     const hashedPassword = await Bun.password.hash(password);
 
-    try {
-        const newUser = await prisma.user.create({
-            data: {
-                email,
-                password: hashedPassword,
-            }
-        });
-        // Generate a JWT token
-        const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: '7h' });
+    const newUser = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+      },
+    });
 
-        return c.json({
-            data: {
-                email: newUser.email,
-            },
-            message: "User created successfully",
-            token,
-        });
-    } catch (err) {
-        console.log(err);
-        return c.json({ message: "Error creating user" }, 500);
+    if (!SECRET_KEY) {
+      throw new Error("JWT secret missing");
     }
+
+    const token = jwt.sign(
+      { email: newUser.email },
+      SECRET_KEY,
+      { expiresIn: "7h" }
+    );
+
+    return c.json(
+      {
+        data: { email: newUser.email },
+        message: "User created successfully",
+        token,
+      },
+      201
+    );
+  } catch (err: any) {
+    console.error("SIGNUP ERROR:", err);
+
+    // Prisma unique constraint fallback
+    if (err?.code === "P2002") {
+      return c.json({ message: "User already exists" }, 409);
+    }
+
+    return c.json(
+      { message: err.message || "Internal Server Error" },
+      500
+    );
+  }
 });
+
 
 app.post("/login", async (c) => {
     const { email, password } = await c.req.json();
