@@ -25,7 +25,7 @@ const PriceTracking: React.FC = () => {
   useEffect(() => {
     const fetchCropData = async () => {
       try {
-        const response = await axios.get("https://ams-yivz.onrender.com/crop/names");
+        const response = await axios.get("https://ams-4-0xhb.onrender.com/crop/names");
         if (response.status !== 200) throw new Error("Failed to fetch crop data");
         setCropNames(response.data.crops);
       } catch (error) {
@@ -71,7 +71,7 @@ const PriceTracking: React.FC = () => {
 
     try {
       const response = await axios.get(
-        `https://ams-yivz.onrender.com/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
+        `https://ams-4-0xhb.onrender.com/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
       );
 
       if (response.status === 200) {
