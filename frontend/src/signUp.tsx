@@ -33,7 +33,7 @@ const SignUp = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("https://ams-yivz.onrender.com/user/signUp", {
+      const response = await axios.post("https://ams-4-0xhb.onrender.com/user/signUp", {
         email: formData.email,
         password: formData.password,
       });
