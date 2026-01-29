@@ -21,40 +21,67 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-    if (!formData.termsAccepted) {
-      toast.error("You must accept the Terms and Conditions");
-      return;
-    }
+  e.preventDefault();
 
-    setLoading(true);
-    try {
-      const response = await axios.post("https://ams-4-0xhb.onrender.com/user/signUp", {
+  if (formData.password !== formData.confirmPassword) {
+    toast.error("Passwords do not match");
+    return;
+  }
+
+  if (!formData.termsAccepted) {
+    toast.error("You must accept the Terms and Conditions");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const response = await axios.post(
+      "http://localhost:4000/user/signUp",
+      {
         email: formData.email,
         password: formData.password,
-      });
+      }
+    );
 
-      if (response.status === 204) {
-        toast.error("Account already exists");
-        return;
-      }
-      if (response.status !== 200) {
-        toast.error("Failed to create account");
-        return;
-      }
-      toast.success("Account created successfully");
-      setFormData({ email: "", password: "", confirmPassword: "", termsAccepted: false });
-    } catch (error) {
-      toast.error("An error occurred during sign up.");
-      console.error("Error signing up:", error);
-    } finally {
-      setLoading(false);
+    // ✅ SUCCESS (201)
+    if (response.status === 201 && response.data?.token) {
+      toast.success(response.data.message || "Account created successfully");
+
+      // Optional: store token
+      localStorage.setItem("token", response.data.token);
+
+      setFormData({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        termsAccepted: false,
+      });
+      return;
     }
-  };
+
+    // Fallback (should not normally hit)
+    toast.error("Failed to create account");
+
+  } catch (error: any) {
+    // ✅ USER ALREADY EXISTS
+    if (error.response?.status === 409) {
+      toast.error("Account already exists");
+      return;
+    }
+
+    // ❌ OTHER ERRORS
+    toast.error(
+      error.response?.data?.message ||
+      "An error occurred during sign up."
+    );
+    console.error("Error signing up:", error);
+
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div

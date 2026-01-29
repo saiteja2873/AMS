@@ -25,7 +25,7 @@ const AdmUpdateCropData: React.FC = () => {
   useEffect(() => {
     const fetchCropData = async () => {
       try {
-        const response = await axios.get("https://ams-4-0xhb.onrender.com/crop/names");
+        const response = await axios.get("http://localhost:4000/crop/names");
         if (response.status !== 200) throw new Error("Failed to fetch crop data");
         setCropNames(response.data.crops);
       } catch (error) {
@@ -70,7 +70,7 @@ const AdmUpdateCropData: React.FC = () => {
 
     try {
       const response = await axios.get(
-        `https://ams-4-0xhb.onrender.com/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
+        `http://localhost:4000/crop?crop=${selectedCrop}&state=${selectedState}&district=${selectedDistrict}`
       );
 
       if (response.status === 200) {
@@ -104,7 +104,7 @@ const AdmUpdateCropData: React.FC = () => {
 
   const handleUpdateSubmit = async (updatedCrop: Crop) => {
     try {
-      const response = await axios.put("https://ams-4-0xhb.onrender.com/crop/update", {
+      const response = await axios.put("http://localhost:4000/crop/update", {
         id: updatedCrop.id,
         crop: updatedCrop.crop,
         state: updatedCrop.state,
@@ -132,7 +132,7 @@ const AdmUpdateCropData: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await axios.delete(`https://ams-4-0xhb.onrender.com/crop/${id}`);
+      await axios.delete(`http://localhost:4000/crop/${id}`);
       setData((prev) => prev.filter((item) => item.id !== id));
       toast.success("Crop data deleted successfully");
     } catch (error) {
