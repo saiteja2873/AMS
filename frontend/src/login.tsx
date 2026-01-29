@@ -19,7 +19,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:4000/user/login", {
+      const response = await axios.post("https://ams-yivz.onrender.com/user/login", {
         email: formData.email,
         password: formData.password,
       });

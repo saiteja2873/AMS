@@ -22,7 +22,7 @@ const CostTrackingAdm: React.FC = () => {
     }
 
     toast.promise(
-      axios.post("http://localhost:4000/crop", {
+      axios.post("https://ams-yivz.onrender.com/crop", {
         crop: selectedCrop,
         state: selectedState,
         district: selectedDistrict,
